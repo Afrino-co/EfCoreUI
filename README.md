@@ -1,4 +1,4 @@
-Welcome to the **EfCoreUI** Repository!
+🚀Welcome to the **EfCoreUI** Repository!
 
 Empower your Visual Studio environment with EfCoreUI, a cutting-edge plugin designed to enhance your Entity Framework Core (EF Core) development experience. Seamlessly integrating into Visual Studio, EfCoreUI introduces a refined User Interface (UI) for EF Core commands, providing developers with powerful tools for database migrations and management.
 
