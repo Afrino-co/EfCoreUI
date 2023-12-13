@@ -123,9 +123,13 @@ namespace TestMenu
 
         private void SetSelectedStartUpProject(List<Project> runnableProjects)
         {
+            if (runnableProjects.Any())
+            {
             this.comboBoxStartupProject.SelectedItem = runnableProjects.FirstOrDefault().Name;
 
             MemoryParameter.StartUpSelectedProject = MemoryParameter.StartUpProjects.FirstOrDefault(w => w.Name == runnableProjects.FirstOrDefault().Name);
+                
+            }
 
             if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
             {
@@ -724,19 +728,40 @@ namespace TestMenu
 
             foreach (Project project in dte.Solution.Projects)
             {
+                FindRunnableProjectsInHierarchy(project, runnableProjects);
+            }
+
+            return runnableProjects;
+        }
+
+        private static void FindRunnableProjectsInHierarchy(Project project, List<Project> runnableProjects)
+        {
+            if (project.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFolder || project.Kind == EnvDTE.Constants.vsProjectItemKindVirtualFolder || project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+            {
+                // اگر پروژه یک نمایه (Solution Folder) باشد، پویش درون آن را انجام دهید
+                foreach (ProjectItem projectItem in project.ProjectItems)
+                {
+                    if (projectItem.SubProject != null)
+                    {
+                        FindRunnableProjectsInHierarchy(projectItem.SubProject, runnableProjects);
+                    }
+                }
+            }
+            else
+            {
+                // اگر پروژه به عنوان یک پروژه قابل اجرا تشخیص داده شود، به لیست اضافه کنید
                 if (IsRunnableProject(project))
                 {
                     runnableProjects.Add(project);
                 }
             }
-
-            return runnableProjects;
         }
 
         private static bool IsRunnableProject(Project project)
         {
             try
             {
+        
                 // چک کنید که پروژه قابل اجراست (وبی یا ویندوزی)
                 return project.Properties.Item("OutputType").Value.ToString() == "1"  // Windows Application
                     || project.Properties.Item("OutputType").Value.ToString() == "3"; // Exe (Console Application)
