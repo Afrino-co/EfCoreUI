@@ -2,22 +2,66 @@
 
 Empower your Visual Studio environment with EfCoreUI, a cutting-edge plugin designed to enhance your Entity Framework Core (EF Core) development experience. Seamlessly integrating into Visual Studio, EfCoreUI introduces a refined User Interface (UI) for EF Core commands, providing developers with powerful tools for database migrations and management.
 
-**Key Features:**
+![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/2a77cee2-b380-4f29-81d9-489a2d088f94)
+
+**Key Features:** 
 
 1. **Add Migration**
    - Streamline your development process by effortlessly creating and managing migrations with a perfect blend of simplicity and efficiency.
 
-2. **Remove Last Migration:**
+      1.Right click on Model data Project and click on **Add Migration** Item in **Entity Framework core** section.
+      
+      ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/4bc4666e-551f-4545-b8c8-c35a127921cf)
+      
+      2.Apply your settings
+      
+      ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/7b82b2d4-c5e8-452d-8600-e2a3571881dd)
+      
+      3.After config and click **ok** Btn 
+      
+      ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/21acf0c4-6000-4f92-8889-844918fee655)
+   
+3. **Remove Last Migration:**
    - Maintain code clarity by easily removing the last created migration, ensuring a clean and efficient development process.
 
-3. **Generate SQL Script:**
-   - Dynamically generate SQL scripts for your migrations, providing insights into the underlying changes in your database schema.
+    1.
+   
+   ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/c2d73024-5d54-43a8-a4e4-7ffef2b724a6)
+   
+   2.
+   
+   ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/3149e868-f6f6-4cb3-ba7c-8fe7ac8bec9b)
 
-4. **Update Database:**
+4. **Generate SQL Script:**
+   - Dynamically generate SQL scripts for your migrations, providing insights into the underlying changes in your database schema.
+   1.
+
+   ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/bdb95e75-2966-4e93-9ed3-3b2c533ef7e3)
+
+   2.
+
+   ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/9343d201-7925-462c-9a45-bf562c001816)
+
+5. **Update Database:**
    - Conduct a symphony of database updates by choosing and executing migrations, complete with autocompletion for elegantly named migration sequences.
+   1.
+
+   ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/20d0e140-05e8-4f99-b6f8-69226de843d2)
+
+   2.
+
+   ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/9b874954-c0c1-4ec5-8fd6-7ec045f3c337)
+
 
 4. **Drop Database:**
    - Effortlessly drop databases, offering flexibility in your development environment.
+   1.
+
+   ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/ab0c55b8-ab31-4ac0-af8f-c45c21344f12)
+   
+   2.
+   
+   ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/4605caaa-ce00-42aa-b8c2-fd3e36c703cb)
 
 5. **Harmonize the Orchestra: Suggest Installing dotnet ef Command Line Tools:**
    - Enhance the development experience by suggesting the installation of dotnet ef command line tools, ensuring a seamless workflow for EF Core-related projects.
@@ -27,6 +71,8 @@ Empower your Visual Studio environment with EfCoreUI, a cutting-edge plugin desi
 
 3. **Architectural Brilliance: Generate DbContext from Existing Databases(coming soon):**
    - Sculpt a finely detailed DbContext by extracting its essence from existing databases, adorned with improved function structures for enhanced code organization.
+  
+
 
 **Getting Started:**
 
