@@ -24,6 +24,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Shapes;
+using Microsoft.VisualStudio.PlatformUI;
 using VSLangProj;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -32,15 +33,20 @@ namespace TestMenu
     public partial class Form1 : Form
     {
         public OprationModeEnum _oprationModeEnum { get; set; }
+
         public Form1()
         {
-
         }
 
         public Form1(DTE2 dTE2, OprationModeEnum oprationModeEnum)
         {
             InitializeComponent();
             _oprationModeEnum = oprationModeEnum;
+            if (dTE2 != null)
+            {
+                MemoryParameter.Dte2 = dTE2;
+            }
+
             //var f = dTE2.Solution.Projects;
             //var solutionExplorer0 = dTE2.ToolWindows.SolutionExplorer.UIHierarchyItems;
             //var solutionExplorer = dTE2.ToolWindows.SolutionExplorer;
@@ -68,7 +74,6 @@ namespace TestMenu
             else if (oprationModeEnum == OprationModeEnum.DropDatabase)
             {
                 ModeDropDatabase();
-
             }
 
 
@@ -77,9 +82,6 @@ namespace TestMenu
             SetStartUpProject(dTE2);
 
             SetBuildConfigurationComboBox();
-
-
-
         }
 
 
@@ -95,26 +97,22 @@ namespace TestMenu
                 MemoryParameter.StartUpProjects.Add(project);
 
                 this.comboBoxStartupProject.Items.Add(project.Name);
-
             }
 
             SetSelectedStartUpProject(runnableProjects);
             comboBoxStartupProject_Validating(comboBoxStartupProject, new CancelEventArgs());
-
         }
 
         private void SetMigrationProjects(DTE2 dTE2)
         {
-            List<Project> projects = GetProjects(dTE2);
+            MemoryParameter.Projects = GetProjects(dTE2);
             MemoryParameter.MigrationProjects = new List<Project>();
 
             // اطلاعات به ComboBox یا جای دیگری اضافه کنید
-            foreach (Project project in projects)
+            foreach (Project project in MemoryParameter.Projects)
             {
                 MemoryParameter.MigrationProjects.Add(project);
                 this.comboBoxMigrationProject.Items.Add(project.Name);
-
-
             }
 
             SetSelectedProjectFromSolutionExplorer(dTE2);
@@ -125,10 +123,9 @@ namespace TestMenu
         {
             if (runnableProjects.Any())
             {
-            this.comboBoxStartupProject.SelectedItem = runnableProjects.FirstOrDefault().Name;
+                this.comboBoxStartupProject.SelectedItem = runnableProjects.FirstOrDefault().Name;
 
-            MemoryParameter.StartUpSelectedProject = MemoryParameter.StartUpProjects.FirstOrDefault(w => w.Name == runnableProjects.FirstOrDefault().Name);
-                
+                MemoryParameter.StartUpSelectedProject = MemoryParameter.StartUpProjects.FirstOrDefault(w => w.Name == runnableProjects.FirstOrDefault().Name);
             }
 
             if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
@@ -169,12 +166,10 @@ namespace TestMenu
                             // مثلاً اسم پروژه را بدست آورید:
                             this.comboBoxMigrationProject.SelectedItem = project.Name;
                             MemoryParameter.MigrationSelectedProject = MemoryParameter.MigrationProjects.FirstOrDefault(w => w.Name == project.Name);
-
                         }
                     }
                 }
             }
-
         }
 
         private void SetBuildConfigurationComboBox()
@@ -206,33 +201,52 @@ namespace TestMenu
                     if (MemoryParameter.MigrationRootPaths.ContainsKey("Migrations"))
                     {
                         comboBoxMigrationFolder.SelectedItem = MemoryParameter.MigrationRootPaths.FirstOrDefault(f => f.Key.Contains("Migrations")).Key;
-
                     }
                     else
                     {
                         comboBoxMigrationFolder.SelectedItem = MemoryParameter.MigrationRootPaths.FirstOrDefault().Key;
-
                     }
+
                     comboBoxMigrationFolder_Validating(comboBoxMigrationFolder, new CancelEventArgs());
                 }
 
-
+                if (MemoryParameter.DbContextClassLst != null && MemoryParameter.DbContextClassLst.Any())
+                {
+                    MemoryParameter.DbContextClassLst.Clear();
+                }
 
                 MemoryParameter.DbContextClassLst = GetDbContextClassNames(MemoryParameter.MigrationSelectedProject);
+                
+                if (MemoryParameter.Projects.Any())
+                {
+                    foreach (var item in MemoryParameter.Projects)
+                    {
+                        var contextClassNames = GetDbContextClassNames(item);
+                        if (contextClassNames.Any())
+                        {
+                            foreach (var className in contextClassNames)
+                            {
+                                if (!MemoryParameter.DbContextClassLst.Any(a => a.Key == className.Key))
+                                {
+                                    MemoryParameter.DbContextClassLst.Add(className.Key, className.Value);
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (MemoryParameter.DbContextClassLst != null && MemoryParameter.DbContextClassLst.Any())
                 {
                     comboBoxDbContextClass.Items.Clear();
                     comboBoxDbContextClass.Items.AddRange(MemoryParameter.DbContextClassLst.Select(s => s.Key).ToArray());
                     comboBoxDbContextClass.SelectedItem = MemoryParameter.DbContextClassLst.FirstOrDefault().Key;
                     comboBoxDbContextClass_Validating(comboBoxDbContextClass, new CancelEventArgs());
-
                 }
                 else
                 {
                     comboBoxDbContextClass.Items.Clear();
 
                     comboBoxDbContextClass_Validating(comboBoxDbContextClass, new CancelEventArgs());
-
                 }
 
 
@@ -245,8 +259,8 @@ namespace TestMenu
                         {
                             comboBoxToMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
                             comboBoxToMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
-
                         }
+
                         if (migrationLst.Count >= 1)
                         {
                             migrationLst.Add("0");
@@ -272,19 +286,14 @@ namespace TestMenu
                             migrationLst.Add("0");
                             comboBoxTargetMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
                             comboBoxTargetMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
-
                         }
                     }
                     else
                     {
                         comboBoxTargetMigration.Items.Clear();
                     }
-
-
                 }
-
             }
-
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -312,17 +321,13 @@ namespace TestMenu
                         migrationLst.Add("0");
                         comboBoxTargetMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
                         comboBoxTargetMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
-
                     }
                 }
                 else
                 {
                     comboBoxTargetMigration.Items.Clear();
                 }
-
-
             }
-
         }
 
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
@@ -358,42 +363,65 @@ namespace TestMenu
             bool formWithError = false;
 
             if (string.IsNullOrWhiteSpace(comboBoxMigrationProject.SelectedItem?.ToString()))
-            { formWithError = true; }
+            {
+                formWithError = true;
+            }
+
             if (string.IsNullOrWhiteSpace(comboBoxStartupProject.SelectedItem?.ToString()))
-            { formWithError = true; }
+            {
+                formWithError = true;
+            }
+
             if (string.IsNullOrWhiteSpace(comboBoxDbContextClass.SelectedItem?.ToString()))
-            { formWithError = true; }
+            {
+                formWithError = true;
+            }
 
             if (_oprationModeEnum == OprationModeEnum.AddMigration)
             {
                 if (string.IsNullOrWhiteSpace(textBox_migration_name?.Text))
-                { formWithError = true; }
-                if (string.IsNullOrWhiteSpace(comboBoxMigrationFolder.SelectedItem?.ToString()))
-                { formWithError = true; }
+                {
+                    formWithError = true;
+                }
 
+                if (string.IsNullOrWhiteSpace(comboBoxMigrationFolder.SelectedItem?.ToString()))
+                {
+                    formWithError = true;
+                }
             }
 
             if (_oprationModeEnum == OprationModeEnum.GenerateSqlScript)
             {
                 if (string.IsNullOrWhiteSpace(comboBoxFromMigration.SelectedItem?.ToString()))
-                { formWithError = true; }
+                {
+                    formWithError = true;
+                }
+
                 if (string.IsNullOrWhiteSpace(comboBoxToMigration.SelectedItem?.ToString()))
-                { formWithError = true; }
+                {
+                    formWithError = true;
+                }
+
                 if (string.IsNullOrWhiteSpace(textBoxScript.Text?.ToString()))
-                { formWithError = true; }
+                {
+                    formWithError = true;
+                }
             }
 
             if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
             {
                 if (string.IsNullOrWhiteSpace(comboBoxTargetMigration.SelectedItem?.ToString()))
-                { formWithError = true; }
+                {
+                    formWithError = true;
+                }
 
                 if (!checkBoxUseDefaultConnection.Checked)
                 {
                     if (string.IsNullOrWhiteSpace(comboBoxConnection.SelectedItem?.ToString()))
-                    { formWithError = true; }
+                    {
+                        formWithError = true;
+                    }
                 }
-
             }
 
             if (!ValidateChildren(ValidationConstraints.Enabled) || formWithError)
@@ -401,10 +429,10 @@ namespace TestMenu
                 MessageBox.Show("There is an issue with the form validations.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             var cmd = AggregateEfCommand();
 
             await ExecuteEfCommand(MemoryParameter.MigrationSelectedProject.FullName.Replace(MemoryParameter.MigrationSelectedProject.Name + ".csproj", ""), cmd);
-
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -421,6 +449,7 @@ namespace TestMenu
         }
 
         #region Validations
+
         //private void InvokeAllValidationAddMigration()
         //{
         //    textBox_migration_name_Validating1(textBox_migration_name, new CancelEventArgs());
@@ -435,7 +464,6 @@ namespace TestMenu
         //}
 
 
-
         private void textBox_migration_name_Validating(object sender, CancelEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textBox_migration_name?.Text))
@@ -443,7 +471,6 @@ namespace TestMenu
                 //e.Cancel = true;
                 //textBox_migration_name.Focus();
                 errorProvider_migration_name.SetError(textBox_migration_name, "This field is Required");
-
             }
             else
             {
@@ -459,7 +486,6 @@ namespace TestMenu
                 //e.Cancel = true;
                 //comboBoxMigrationProject.Focus();
                 errorProvider_comboBoxMigrationProject.SetError(comboBoxMigrationProject, "This field is Required");
-
             }
             else
             {
@@ -588,12 +614,6 @@ namespace TestMenu
             }
         }
 
-
-
-
-
-
-
         #endregion
 
         private static List<Project> GetProjects(DTE2 dte)
@@ -630,6 +650,7 @@ namespace TestMenu
             {
                 GetClassesInProjectItem(projectItem, classes);
             }
+
             return classes;
         }
 
@@ -643,6 +664,7 @@ namespace TestMenu
                 var result = tf.Split(";".ToCharArray()).ToList();
                 return result;
             }
+
             return null;
         }
 
@@ -761,10 +783,9 @@ namespace TestMenu
         {
             try
             {
-        
                 // چک کنید که پروژه قابل اجراست (وبی یا ویندوزی)
-                return project.Properties.Item("OutputType").Value.ToString() == "1"  // Windows Application
-                    || project.Properties.Item("OutputType").Value.ToString() == "3"; // Exe (Console Application)
+                return project.Properties.Item("OutputType").Value.ToString() == "1" // Windows Application
+                       || project.Properties.Item("OutputType").Value.ToString() == "3"; // Exe (Console Application)
             }
             catch
             {
@@ -785,10 +806,13 @@ namespace TestMenu
                 {
                     return true;
                 }
+                else if (baseClass.FullName.ToLower().Trim().Contains("dbcontext"))
+                {
+                    return true;
+                }
             }
 
             return false;
-
         }
 
         public string AggregateEfCommand()
@@ -814,13 +838,11 @@ namespace TestMenu
                 //await Task.Delay(1000);
 
                 command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {migrationName} --output-dir {outputDir} {additionalArgument}";
-
             }
             else if (_oprationModeEnum == OprationModeEnum.RemoveMigration)
             {
                 operation = "migrations remove";
                 command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework}  --force {additionalArgument}";
-
             }
             else if (_oprationModeEnum == OprationModeEnum.GenerateSqlScript)
             {
@@ -831,7 +853,6 @@ namespace TestMenu
                 var idempotent = checkBoxUseDefaultConnection.Checked ? "--idempotent" : "";
                 var no_transactions = checkBoxTransactions.Checked ? "--no-transactions" : "";
                 command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {from} {to} --output {outputsql} {idempotent} {no_transactions} {additionalArgument}";
-
             }
             else if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
             {
@@ -840,15 +861,14 @@ namespace TestMenu
                 var concectionString = !checkBoxUseDefaultConnection.Checked && !string.IsNullOrEmpty(comboBoxFromMigration.Text) ? "--connection " + '"' + comboBoxFromMigration.Text.Split(char.Parse("|"))[1] + '"' : "";
 
                 command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {toMigration} {concectionString} {additionalArgument}";
-
             }
             else if (_oprationModeEnum == OprationModeEnum.DropDatabase)
             {
                 operation = "database drop";
 
                 command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} --force {additionalArgument}";
-
             }
+
             return command;
         }
 
@@ -880,20 +900,15 @@ namespace TestMenu
             {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
-
                     await form2.DisplayMessage(e.Data);
                 }
-
             };
             process.ErrorDataReceived += async (sender, e) =>
             {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
-
                     await form2.DisplayMessage(e.Data);
-
                 }
-
             };
 
             // شروع و مشاهده خروجی
@@ -908,28 +923,17 @@ namespace TestMenu
                 // نمایش خروجی به کاربر در ترد گرافیکی
 
                 await form2.DisplayMessage(dotnetPath + " " + command);
-
             });
             await process.WaitForExitAsync();
             form2.ControlBox = true;
-            await Task.Run(async () =>
-            {
-                await form2.DisplayMessage("Plz Click on Close Btn And Continue...");
-
-            });
+            await Task.Run(async () => { await form2.DisplayMessage("Plz Click on Close Btn And Continue..."); });
         }
 
 
-
-
-
-
-
-
         #region generate Sql Script
+
         static List<string> GetMigrationFileByDbContextName(Project project, string dbContextName)
         {
-
             // خواندن تمام فایل‌ها و نمایش محتوای آنها
             Dictionary<string, string> filesContent = ReadAllFilesInProject(project);
 
@@ -954,6 +958,7 @@ namespace TestMenu
 
             return matchingFiles;
         }
+
         static Dictionary<string, string> ReadAllFilesInProject(Project project)
         {
             Dictionary<string, string> filesContent = new Dictionary<string, string>();
@@ -982,7 +987,6 @@ namespace TestMenu
                     var fileExtention = System.IO.Path.GetExtension(filePath);
                     if (fileExtention.Contains(".cs"))
                     {
-
                         string fileContent = File.ReadAllText(filePath);
 
                         // افزودن به دیکشنری
@@ -1001,6 +1005,7 @@ namespace TestMenu
         #endregion
 
         #region Update database
+
         static Dictionary<string, string> ExtractConnectionStringsFromJsonFiles(Project project)
         {
             List<JsonFileInfo> connectionStrings = new List<JsonFileInfo>();
@@ -1033,6 +1038,7 @@ namespace TestMenu
                 // افزودن به لیست اطلاعات اتصال
                 connectionStrings.Add(connectionStringInfo);
             }
+
             foreach (ProjectItem item in projectItem.ProjectItems)
             {
                 // بررسی آیا این یک فایل است
@@ -1067,7 +1073,6 @@ namespace TestMenu
 
         static void ExtractConnectionStringsFromJson(string jsonContent, JsonFileInfo jsonFileInfo)
         {
-
             try
             {
                 JObject jsonObject = JObject.Parse(jsonContent);
@@ -1076,7 +1081,6 @@ namespace TestMenu
                 GetJsonObjects(jsonObject, jsonFileInfo);
                 if (jsonFileInfo.Properties.Count > 0)
                 {
-
                     jsonFileInfo.Properties = jsonFileInfo.Properties.Where(w => w.Value.Contains("Data Source=") || w.Value.Contains("Server=")).ToDictionary(w => w.Key, w => w.Value);
                 }
             }
@@ -1084,11 +1088,10 @@ namespace TestMenu
             {
                 Console.WriteLine("Error parsing JSON content: " + ex.Message);
             }
-
         }
+
         static void GetJsonObjects(JObject jsonObject, JsonFileInfo jsonFileInfo)
         {
-
             foreach (var property in jsonObject.Properties())
             {
                 // بررسی نوع property
@@ -1117,7 +1120,6 @@ namespace TestMenu
             else
             {
                 comboBoxConnection.Enabled = true;
-
             }
         }
     }
@@ -1127,6 +1129,4 @@ namespace TestMenu
         public string FileName { get; set; }
         public Dictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
     }
-
-
 }

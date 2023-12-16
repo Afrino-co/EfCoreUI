@@ -4,11 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EnvDTE80;
 
 namespace TestMenu
 {
     public static class MemoryParameter
     {
+        #region General
+
+        public static DTE2 Dte2 { get; set; }
+        public static List<Project> Projects { get; set; }
+
+        #endregion
+        
         #region Add Migration
         public static List<Project> MigrationProjects { get; set; }
         public static Project MigrationSelectedProject { get; set; }
