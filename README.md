@@ -17,9 +17,10 @@ Empower your Visual Studio environment with EfCoreUI, a cutting-edge plugin desi
       
       ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/7b82b2d4-c5e8-452d-8600-e2a3571881dd)
       
-      3.After config and click **ok** Btn 
+      3. See Your Command Result On **Output** Windows
       
-      ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/21acf0c4-6000-4f92-8889-844918fee655)
+      ![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/5432d02b-6910-459a-8614-cf0226635b31)
+
    
 3. **Remove Last Migration:**
    - Maintain code clarity by easily removing the last created migration, ensuring a clean and efficient development process.
