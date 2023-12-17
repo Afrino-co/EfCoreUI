@@ -1,32 +1,16 @@
-﻿using CliWrap;
-using CliWrap.Buffered;
-using EnvDTE;
+﻿using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
-using System.Windows.Shapes;
-using Microsoft.VisualStudio.PlatformUI;
-using VSLangProj;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TestMenu
 {
@@ -40,86 +24,105 @@ namespace TestMenu
 
         public Form1(DTE2 dTE2, OprationModeEnum oprationModeEnum)
         {
-            InitializeComponent();
-            _oprationModeEnum = oprationModeEnum;
-            if (dTE2 != null)
+            try
             {
-                MemoryParameter.Dte2 = dTE2;
-            }
+                InitializeComponent();
+                _oprationModeEnum = oprationModeEnum;
+                if (dTE2 != null)
+                {
+                    MemoryParameter.Dte2 = dTE2;
+                }
 
-            //var f = dTE2.Solution.Projects;
-            //var solutionExplorer0 = dTE2.ToolWindows.SolutionExplorer.UIHierarchyItems;
-            //var solutionExplorer = dTE2.ToolWindows.SolutionExplorer;
-            //object[] items = solutionExplorer.SelectedItems as object[];
-            //this.comboBox1.Items.AddRange(items.Select(s=>s as EnvDTE.UIHierarchyItem).Select(s=>s.Name).ToArray());
-            if (oprationModeEnum == OprationModeEnum.AddMigration)
-            {
-                ModeAddMigration();
-                this.textBox_migration_name.Text = "Initial";
+                //var f = dTE2.Solution.Projects;
+                //var solutionExplorer0 = dTE2.ToolWindows.SolutionExplorer.UIHierarchyItems;
+                //var solutionExplorer = dTE2.ToolWindows.SolutionExplorer;
+                //object[] items = solutionExplorer.SelectedItems as object[];
+                //this.comboBox1.Items.AddRange(items.Select(s=>s as EnvDTE.UIHierarchyItem).Select(s=>s.Name).ToArray());
+                if (oprationModeEnum == OprationModeEnum.AddMigration)
+                {
+                    ModeAddMigration();
+                    this.textBox_migration_name.Text = "Initial";
+                }
+                else if (oprationModeEnum == OprationModeEnum.RemoveMigration)
+                {
+                    ModeRemoveMigration();
+                }
+                else if (oprationModeEnum == OprationModeEnum.GenerateSqlScript)
+                {
+                    ModeGenerateSqlScript();
+                }
+                else if (oprationModeEnum == OprationModeEnum.UpdateDatabase)
+                {
+                    ModeUpdateDatabase();
+                    checkBoxUseDefaultConnection.Checked = true;
+                    comboBoxConnection.Enabled = false;
+                }
+                else if (oprationModeEnum == OprationModeEnum.DropDatabase)
+                {
+                    ModeDropDatabase();
+                }
             }
-            else if (oprationModeEnum == OprationModeEnum.RemoveMigration)
+            catch (Exception e)
             {
-                ModeRemoveMigration();
+                Console.WriteLine(e);
+                throw;
             }
-            else if (oprationModeEnum == OprationModeEnum.GenerateSqlScript)
-            {
-                ModeGenerateSqlScript();
-            }
-            else if (oprationModeEnum == OprationModeEnum.UpdateDatabase)
-            {
-                ModeUpdateDatabase();
-                checkBoxUseDefaultConnection.Checked = true;
-                comboBoxConnection.Enabled = false;
-            }
-            else if (oprationModeEnum == OprationModeEnum.DropDatabase)
-            {
-                ModeDropDatabase();
-            }
-
-
-            SetMigrationProjects(dTE2);
-
-            SetStartUpProject(dTE2);
-
-            SetBuildConfigurationComboBox();
         }
 
-
-        private void SetStartUpProject(DTE2 dTE2)
+        private async void Form1_Load(object sender, EventArgs e)
         {
+            // Task[] tasks = new Task[3];
+            await Task.Delay(100);
+            // Console.WriteLine(DateTime.Now);
+            SetMigrationProjects(MemoryParameter.Dte2);
+            // Console.WriteLine(DateTime.Now);
+            SetStartUpProject(MemoryParameter.Dte2);
+            // Console.WriteLine(DateTime.Now);
+            SetBuildConfigurationComboBox();
+            // Console.WriteLine(DateTime.Now);
+
+            // tasks[0] = Task.Factory.StartNew(async () => { await SetMigrationProjects(MemoryParameter.Dte2); });
+            // tasks[1] = Task.Factory.StartNew(async () => { await SetStartUpProject(MemoryParameter.Dte2); });
+            //
+            // tasks[2] = Task.Factory.StartNew(async () => {await SetBuildConfigurationComboBox(); });
+            // Task.WaitAll(tasks);
+        }
+
+        private async Task SetStartUpProject(DTE2 dTE2)
+        {
+            await Task.Delay(1);
             // لیست پروژه‌های قابل اجرا را بگیرید
-            List<Project> runnableProjects = GetRunnableProjects(dTE2);
+            List<Project> runnableProjects = await GetRunnableProjects(dTE2);
             MemoryParameter.StartUpProjects = new List<Project>();
 
             // اطلاعات به ComboBox یا جای دیگری اضافه کنید
             foreach (Project project in runnableProjects)
             {
                 MemoryParameter.StartUpProjects.Add(project);
-
-                this.comboBoxStartupProject.Items.Add(project.Name);
             }
 
-            SetSelectedStartUpProject(runnableProjects);
+            this.comboBoxStartupProject.Items.AddRange(MemoryParameter.StartUpProjects.Select(s => s.Name).ToArray());
+
+            await SetSelectedStartUpProject(runnableProjects);
             comboBoxStartupProject_Validating(comboBoxStartupProject, new CancelEventArgs());
         }
 
-        private void SetMigrationProjects(DTE2 dTE2)
+        private async Task SetMigrationProjects(DTE2 dTE2)
         {
-            MemoryParameter.Projects = GetProjects(dTE2);
-            MemoryParameter.MigrationProjects = new List<Project>();
+            await Task.Delay(1);
+
+            // MemoryParameter.MigrationProjects = new List<Project>();
 
             // اطلاعات به ComboBox یا جای دیگری اضافه کنید
-            foreach (Project project in MemoryParameter.Projects)
-            {
-                MemoryParameter.MigrationProjects.Add(project);
-                this.comboBoxMigrationProject.Items.Add(project.Name);
-            }
+          
 
-            SetSelectedProjectFromSolutionExplorer(dTE2);
+            this.comboBoxMigrationProject.Items.AddRange(MemoryParameter.MigrationProjects.Select(s => s.Name).ToArray());
+
+            await SetSelectedProjectFromSolutionExplorer(dTE2);
             comboBoxMigrationProject_Validating(comboBoxMigrationProject, new CancelEventArgs());
         }
 
-        private void SetSelectedStartUpProject(List<Project> runnableProjects)
+        private async Task SetSelectedStartUpProject(List<Project> runnableProjects)
         {
             if (runnableProjects.Any())
             {
@@ -130,14 +133,14 @@ namespace TestMenu
 
             if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
             {
-                var connectionStrings = ExtractConnectionStringsFromJsonFiles(MemoryParameter.StartUpSelectedProject);
+                var connectionStrings = await ExtractConnectionStringsFromJsonFiles(MemoryParameter.StartUpSelectedProject);
                 if (connectionStrings.Count > 0)
                 {
                     comboBoxConnection.Items.AddRange(connectionStrings.Select(s => s.Key + " | " + s.Value).ToArray());
                 }
             }
 
-            var targetFrameworks = GetTargetFrameworks(MemoryParameter.StartUpSelectedProject);
+            var targetFrameworks = await GetTargetFrameworks(MemoryParameter.StartUpSelectedProject);
             if (targetFrameworks != null)
             {
                 targetFrameworks.Add("<Default>");
@@ -146,8 +149,9 @@ namespace TestMenu
             }
         }
 
-        private void SetSelectedProjectFromSolutionExplorer(DTE2 dTE2)
+        private async Task SetSelectedProjectFromSolutionExplorer(DTE2 dTE2)
         {
+            await Task.Delay(1);
             var solutionExplorer = dTE2.ToolWindows.SolutionExplorer;
             object[] items = solutionExplorer.SelectedItems as object[];
 
@@ -172,16 +176,18 @@ namespace TestMenu
             }
         }
 
-        private void SetBuildConfigurationComboBox()
+        private async Task SetBuildConfigurationComboBox()
         {
+            await Task.Delay(1);
             this.comboBoxBuildConfig.Items.AddRange(new object[] { "Debug", "Release" });
             this.comboBoxBuildConfig.SelectedItem = "Debug";
             MemoryParameter.BuildConfigSelectedItem = "Debug";
         }
 
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private async void comboBoxMigrationProject_SelectedIndexChanged(object sender, EventArgs e)
         {
+            await Task.Delay(1);
             if (!string.IsNullOrEmpty(comboBoxMigrationProject.SelectedItem.ToString()))
             {
                 MemoryParameter.MigrationSelectedProject = MemoryParameter.MigrationProjects.FirstOrDefault(w => w.Name == comboBoxMigrationProject.SelectedItem.ToString());
@@ -210,36 +216,20 @@ namespace TestMenu
                     comboBoxMigrationFolder_Validating(comboBoxMigrationFolder, new CancelEventArgs());
                 }
 
-                if (MemoryParameter.DbContextClassLst != null && MemoryParameter.DbContextClassLst.Any())
-                {
-                    MemoryParameter.DbContextClassLst.Clear();
-                }
-
-                MemoryParameter.DbContextClassLst = GetDbContextClassNames(MemoryParameter.MigrationSelectedProject);
-                
-                if (MemoryParameter.Projects.Any())
-                {
-                    foreach (var item in MemoryParameter.Projects)
-                    {
-                        var contextClassNames = GetDbContextClassNames(item);
-                        if (contextClassNames.Any())
-                        {
-                            foreach (var className in contextClassNames)
-                            {
-                                if (!MemoryParameter.DbContextClassLst.Any(a => a.Key == className.Key))
-                                {
-                                    MemoryParameter.DbContextClassLst.Add(className.Key, className.Value);
-                                }
-                            }
-                        }
-                    }
-                }
+                // if (MemoryParameter.DbContextClassLst != null && MemoryParameter.DbContextClassLst.Any())
+                // {
+                //     MemoryParameter.DbContextClassLst.Clear();
+                // }
+                //
+                // MemoryParameter.DbContextClassLst = GetDbContextClassNames(MemoryParameter.MigrationSelectedProject);
+                //
+                //
 
                 if (MemoryParameter.DbContextClassLst != null && MemoryParameter.DbContextClassLst.Any())
                 {
                     comboBoxDbContextClass.Items.Clear();
                     comboBoxDbContextClass.Items.AddRange(MemoryParameter.DbContextClassLst.Select(s => s.Key).ToArray());
-                    comboBoxDbContextClass.SelectedItem = MemoryParameter.DbContextClassLst.FirstOrDefault().Key;
+                    comboBoxDbContextClass.SelectedItem = MemoryParameter.DbContextClassLst.FirstOrDefault(f=>f.Value.Value==MemoryParameter.MigrationSelectedProject.Name).Key;
                     comboBoxDbContextClass_Validating(comboBoxDbContextClass, new CancelEventArgs());
                 }
                 else
@@ -304,8 +294,9 @@ namespace TestMenu
             }
         }
 
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        private async void comboBoxDbContextClass_SelectedIndexChanged(object sender, EventArgs e)
         {
+            await Task.Delay(1);
             if (comboBoxDbContextClass.SelectedItem != null)
             {
                 MemoryParameter.DbContextSelectedClass = MemoryParameter.DbContextClassLst.FirstOrDefault(w => w.Key == comboBoxDbContextClass.SelectedItem.ToString());
@@ -616,48 +607,15 @@ namespace TestMenu
 
         #endregion
 
-        private static List<Project> GetProjects(DTE2 dte)
-        {
-            List<Project> projects = new List<Project>();
+     
 
-            foreach (Project project in dte.Solution.Projects)
-            {
-                GetProjectsRecursive(project, projects);
-            }
+     
+      
 
-            return projects;
-        }
-
-        private Dictionary<string, string> GetDbContextClassNames(Project project)
-        {
-            Dictionary<string, string> dbContextClassNames = new Dictionary<string, string>();
-
-            foreach (CodeClass codeClass in GetClassesInProject(project))
-            {
-                if (IsDbContextSubclass(codeClass))
-                {
-                    dbContextClassNames.Add(codeClass.Name, codeClass.FullName);
-                }
-            }
-
-            return dbContextClassNames;
-        }
-
-        private static IEnumerable<CodeClass> GetClassesInProject(Project project)
-        {
-            List<CodeClass> classes = new List<CodeClass>();
-            foreach (ProjectItem projectItem in project.ProjectItems)
-            {
-                GetClassesInProjectItem(projectItem, classes);
-            }
-
-            return classes;
-        }
-
-        static List<string> GetTargetFrameworks(Project project)
+        static async Task<List<string>> GetTargetFrameworks(Project project)
         {
             // دریافت پروژه فعال در محیط Visual Studio
-
+            await Task.Delay(1);
             if (project != null)
             {
                 string tf = project.Properties.Item("FriendlyTargetFramework").Value.ToString();
@@ -668,34 +626,6 @@ namespace TestMenu
             return null;
         }
 
-        private static void GetClassesInProjectItem(ProjectItem projectItem, List<CodeClass> classes)
-        {
-            if (projectItem.FileCodeModel != null)
-            {
-                foreach (CodeElement codeElement in projectItem.FileCodeModel.CodeElements)
-                {
-                    if (codeElement is CodeNamespace codeNamespace)
-                    {
-                        foreach (CodeElement innerCodeElement in codeNamespace.Members)
-                        {
-                            if (innerCodeElement is CodeClass codeClass)
-                            {
-                                classes.Add(codeClass);
-                            }
-                        }
-                    }
-                    else if (codeElement is CodeClass codeClass)
-                    {
-                        classes.Add(codeClass);
-                    }
-                }
-            }
-
-            foreach (ProjectItem nestedProjectItem in projectItem.ProjectItems)
-            {
-                GetClassesInProjectItem(nestedProjectItem, classes);
-            }
-        }
 
         public static Dictionary<string, string> GetProjectFolders(Project Project)
         {
@@ -725,39 +655,22 @@ namespace TestMenu
             }
         }
 
-        private static void GetProjectsRecursive(Project project, List<Project> projects)
-        {
-            if (project.Kind != ProjectKinds.vsProjectKindSolutionFolder)
-            {
-                projects.Add(project);
-            }
-            else
-            {
-                // اگر پوشه‌ای از نوع Solution Folder باشد، به صورت بازگشتی پروژه‌های داخلی آن را بگیرید
-                foreach (ProjectItem item in project.ProjectItems)
-                {
-                    if (item.SubProject != null)
-                    {
-                        GetProjectsRecursive(item.SubProject, projects);
-                    }
-                }
-            }
-        }
-
-        private static List<Project> GetRunnableProjects(DTE2 dte)
+       
+        private static async Task<List<Project>> GetRunnableProjects(DTE2 dte)
         {
             List<Project> runnableProjects = new List<Project>();
 
             foreach (Project project in dte.Solution.Projects)
             {
-                FindRunnableProjectsInHierarchy(project, runnableProjects);
+                await FindRunnableProjectsInHierarchy(project, runnableProjects);
             }
 
             return runnableProjects;
         }
 
-        private static void FindRunnableProjectsInHierarchy(Project project, List<Project> runnableProjects)
+        private static async Task FindRunnableProjectsInHierarchy(Project project, List<Project> runnableProjects)
         {
+            await Task.Delay(1);
             if (project.Kind == EnvDTE.Constants.vsProjectItemKindPhysicalFolder || project.Kind == EnvDTE.Constants.vsProjectItemKindVirtualFolder || project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
             {
                 // اگر پروژه یک نمایه (Solution Folder) باشد، پویش درون آن را انجام دهید
@@ -794,32 +707,13 @@ namespace TestMenu
             }
         }
 
-        private bool IsDbContextSubclass(CodeClass codeClass)
-        {
-            foreach (CodeElement baseClass in codeClass.Bases)
-            {
-                if (baseClass.FullName == "System.Data.Entity.DbContext")
-                {
-                    return true;
-                }
-                else if (baseClass.FullName == "Microsoft.EntityFrameworkCore.DbContext")
-                {
-                    return true;
-                }
-                else if (baseClass.FullName.ToLower().Trim().Contains("dbcontext"))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+    
 
         public string AggregateEfCommand()
         {
             string migrationProjectPath = MemoryParameter.MigrationSelectedProject.FullName;
             string startupProjectPath = MemoryParameter.StartUpSelectedProject.FullName;
-            string dbContextPath = MemoryParameter.DbContextSelectedClass.Value;
+            string dbContextPath = MemoryParameter.DbContextSelectedClass.Value.Key;
             string buildConfiguration = MemoryParameter.BuildConfigSelectedItem;
             string outputDir = MemoryParameter.MigrationSelectedRootPaths.Value;
 
@@ -891,23 +785,25 @@ namespace TestMenu
                     CreateNoWindow = true
                 }
             };
-
-
-            Form2 form2 = new Form2(this);
+            CreateNewOutputConsole();
+            MemoryParameter.OutputPane.Activate();
+            // Form2 form2 = new Form2(this);
 
             // رویدادهای خروجی فرآیند
             process.OutputDataReceived += async (sender, e) =>
             {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
-                    await form2.DisplayMessage(e.Data);
+                    // await form2.DisplayMessage(e.Data);
+                    await ShowCmdResult(e.Data);
                 }
             };
             process.ErrorDataReceived += async (sender, e) =>
             {
                 if (!string.IsNullOrEmpty(e.Data))
                 {
-                    await form2.DisplayMessage(e.Data);
+                    // await form2.DisplayMessage(e.Data);
+                    await ShowCmdResult(e.Data);
                 }
             };
 
@@ -916,19 +812,45 @@ namespace TestMenu
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
             //this.Hide();
-            form2.Show();
-            form2.ControlBox = false;
+            // form2.Show();
+            // form2.ControlBox = false;
             await Task.Run(async () =>
             {
                 // نمایش خروجی به کاربر در ترد گرافیکی
-
-                await form2.DisplayMessage(dotnetPath + " " + command);
+                await ShowCmdResult(dotnetPath + " " + command);
+                // await form2.DisplayMessage(dotnetPath + " " + command);
             });
+            this.Close();
             await process.WaitForExitAsync();
-            form2.ControlBox = true;
-            await Task.Run(async () => { await form2.DisplayMessage("Plz Click on Close Btn And Continue..."); });
+            // form2.ControlBox = true;
+            // await Task.Run(async () => { await form2.DisplayMessage("Plz Click on Close Btn And Continue..."); });
         }
 
+        private void CreateNewOutputConsole()
+        {
+            Window window = MemoryParameter.Dte2.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
+            if (!window.Visible)
+            {
+                window.Activate();
+            }
+
+            Guid outputWindowPaneGuid = Guid.NewGuid();
+            MemoryParameter.OutputWindow.CreatePane(
+                ref outputWindowPaneGuid,
+                $"EfCoreUI Output Log {DateTime.Now}",
+                Convert.ToInt32(true), // در حالت‌های خاص ممکن است نیاز به تبدیل شود
+                Convert.ToInt32(true) // در حالت‌های خاص ممکن است نیاز به تبدیل شود
+            );
+
+            MemoryParameter.OutputWindow.GetPane(ref outputWindowPaneGuid, out var outputPane);
+            MemoryParameter.OutputPane = outputPane;
+        }
+
+        private async Task ShowCmdResult(string msg)
+        {
+            await Task.Delay(1);
+            MemoryParameter.OutputPane.OutputString(msg + Environment.NewLine);
+        }
 
         #region generate Sql Script
 
@@ -1006,7 +928,7 @@ namespace TestMenu
 
         #region Update database
 
-        static Dictionary<string, string> ExtractConnectionStringsFromJsonFiles(Project project)
+        private static async Task<Dictionary<string, string>> ExtractConnectionStringsFromJsonFiles(Project project)
         {
             List<JsonFileInfo> connectionStrings = new List<JsonFileInfo>();
 
@@ -1014,13 +936,13 @@ namespace TestMenu
             foreach (ProjectItem item in project.ProjectItems)
             {
                 // جستجو در تمام فایل‌های JSON
-                FindJsonFilesRecursively(item, connectionStrings);
+                await FindJsonFilesRecursively(item, connectionStrings);
             }
 
             return connectionStrings.Where(w => w.Properties.Count > 0).SelectMany(s => s.Properties).ToDictionary(w => w.Key, w => w.Value);
         }
 
-        static void FindJsonFilesRecursively(ProjectItem projectItem, List<JsonFileInfo> connectionStrings)
+        static async Task FindJsonFilesRecursively(ProjectItem projectItem, List<JsonFileInfo> connectionStrings)
         {
             if (System.IO.Path.GetExtension(projectItem.Name) == ".json")
             {
@@ -1032,7 +954,7 @@ namespace TestMenu
                 // استخراج اطلاعات اتصال از فایل JSON
                 JsonFileInfo connectionStringInfo = new JsonFileInfo();
 
-                ExtractConnectionStringsFromJson(fileContent, connectionStringInfo);
+                await ExtractConnectionStringsFromJson(fileContent, connectionStringInfo);
                 connectionStringInfo.FileName = fileName;
 
                 // افزودن به لیست اطلاعات اتصال
@@ -1071,14 +993,14 @@ namespace TestMenu
             }
         }
 
-        static void ExtractConnectionStringsFromJson(string jsonContent, JsonFileInfo jsonFileInfo)
+        static async Task ExtractConnectionStringsFromJson(string jsonContent, JsonFileInfo jsonFileInfo)
         {
             try
             {
                 JObject jsonObject = JObject.Parse(jsonContent);
 
                 // یافتن تمام properties در JSON
-                GetJsonObjects(jsonObject, jsonFileInfo);
+                await GetJsonObjects(jsonObject, jsonFileInfo);
                 if (jsonFileInfo.Properties.Count > 0)
                 {
                     jsonFileInfo.Properties = jsonFileInfo.Properties.Where(w => w.Value.Contains("Data Source=") || w.Value.Contains("Server=")).ToDictionary(w => w.Key, w => w.Value);
@@ -1090,7 +1012,7 @@ namespace TestMenu
             }
         }
 
-        static void GetJsonObjects(JObject jsonObject, JsonFileInfo jsonFileInfo)
+        static async Task GetJsonObjects(JObject jsonObject, JsonFileInfo jsonFileInfo)
         {
             foreach (var property in jsonObject.Properties())
             {
@@ -1099,7 +1021,7 @@ namespace TestMenu
                 {
                     // اگر نوع property یک Object باشد، از آن استفاده کنید
                     JObject nestedObject = (JObject)property.Value;
-                    GetJsonObjects(nestedObject, jsonFileInfo);
+                    await GetJsonObjects(nestedObject, jsonFileInfo);
                 }
                 else if (property.Value.Type == JTokenType.String)
                 {

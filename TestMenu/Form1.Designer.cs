@@ -1,4 +1,6 @@
-﻿namespace TestMenu
+﻿using System.Threading.Tasks;
+
+namespace TestMenu
 {
     partial class Form1
     {
@@ -40,6 +42,7 @@
             this.ClientSize = new System.Drawing.Size(284, 261);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
 
         }
@@ -49,8 +52,9 @@
 
 
         public void ModeAddMigration()
-        //private void InitializeComponent()
+        //private  InitializeComponent()
         {
+           
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
@@ -122,7 +126,7 @@
             this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
             this.comboBoxDbContextClass.TabIndex = 8;
-            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxDbContextClass_SelectedIndexChanged);
             this.comboBoxDbContextClass.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxDbContextClass_Validating);
             // 
             // label3
@@ -170,7 +174,7 @@
             this.comboBoxMigrationProject.Name = "comboBoxMigrationProject";
             this.comboBoxMigrationProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxMigrationProject.TabIndex = 4;
-            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBoxMigrationProject_SelectedIndexChanged);
             this.comboBoxMigrationProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxMigrationProject_Validating);
             // 
             // label_migrations_project
@@ -430,8 +434,9 @@
         }
 
         public void ModeRemoveMigration()
-        //private void InitializeComponent()
+        //private  InitializeComponent()
         {
+            
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
@@ -491,7 +496,7 @@
             this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
             this.comboBoxDbContextClass.TabIndex = 8;
-            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxDbContextClass_SelectedIndexChanged);
             this.comboBoxDbContextClass.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxDbContextClass_Validating);
             //
             //label3
@@ -540,7 +545,7 @@
             this.comboBoxMigrationProject.Name = "comboBoxMigrationProject";
             this.comboBoxMigrationProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxMigrationProject.TabIndex = 4;
-            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBoxMigrationProject_SelectedIndexChanged);
             this.comboBoxMigrationProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxMigrationProject_Validating);
 
             //
@@ -731,8 +736,9 @@
         }
 
         public void ModeGenerateSqlScript()
-        //private void InitializeComponent()
+        //private  InitializeComponent()
         {
+            
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxToMigration = new System.Windows.Forms.ComboBox();
@@ -859,7 +865,7 @@
             this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
             this.comboBoxDbContextClass.TabIndex = 8;
-            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxDbContextClass_SelectedIndexChanged);
             this.comboBoxDbContextClass.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxDbContextClass_Validating);
             // 
             // label3
@@ -907,7 +913,7 @@
             this.comboBoxMigrationProject.Name = "comboBoxMigrationProject";
             this.comboBoxMigrationProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxMigrationProject.TabIndex = 4;
-            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBoxMigrationProject_SelectedIndexChanged);
             this.comboBoxMigrationProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxMigrationProject_Validating);
             // 
             // label_migrations_project
@@ -1176,8 +1182,9 @@
         }
 
         public void ModeUpdateDatabase()
-        //private void InitializeComponent()
+        //private  InitializeComponent()
         {
+            
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxTargetMigration = new System.Windows.Forms.ComboBox();
@@ -1273,7 +1280,7 @@
             this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
             this.comboBoxDbContextClass.TabIndex = 8;
-            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxDbContextClass_SelectedIndexChanged);
             this.comboBoxDbContextClass.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxDbContextClass_Validating);
             // 
             // label3
@@ -1321,7 +1328,7 @@
             this.comboBoxMigrationProject.Name = "comboBoxMigrationProject";
             this.comboBoxMigrationProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxMigrationProject.TabIndex = 4;
-            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBoxMigrationProject_SelectedIndexChanged);
             this.comboBoxMigrationProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxMigrationProject_Validating);
             // 
             // label_migrations_project
@@ -1571,8 +1578,9 @@
         }
 
         public void ModeDropDatabase()
-        //private void InitializeComponent()
+        //private  InitializeComponent()
         {
+            
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
@@ -1632,7 +1640,7 @@
             this.comboBoxDbContextClass.Name = "comboBox3";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
             this.comboBoxDbContextClass.TabIndex = 8;
-            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxDbContextClass_SelectedIndexChanged);
             this.comboBoxDbContextClass.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxDbContextClass_Validating);
             //
             //label3
@@ -1681,7 +1689,7 @@
             this.comboBoxMigrationProject.Name = "comboBox1";
             this.comboBoxMigrationProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxMigrationProject.TabIndex = 4;
-            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+            this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBoxMigrationProject_SelectedIndexChanged);
             this.comboBoxMigrationProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxMigrationProject_Validating);
 
             //
