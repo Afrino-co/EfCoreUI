@@ -140,7 +140,13 @@ Congratulations! You've successfully installed EfCoreUI. Begin enjoying the enha
 **Contributing:**
 We welcome contributions! Feel free to fork, submit pull requests, or open issues. Your feedback and contributions help us create a better development experience for the community.
 
+**Note:** If you encounter this problem while working with the extension:
+![image](https://github.com/Afrino-co/EfCoreUI/assets/64721166/2c83f0e1-8082-42e6-898d-179b75ff487c)
 
+Run the following command in CMD:
+```
+dotnet tool install --global dotnet-ef
+```
 ---
 
 **Support EfCoreUI Development!**
