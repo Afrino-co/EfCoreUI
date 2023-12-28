@@ -52,9 +52,9 @@ namespace TestMenu
 
 
         public void ModeAddMigration()
-        //private  InitializeComponent()
+        //private void InitializeComponent()
         {
-           
+
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
@@ -434,9 +434,9 @@ namespace TestMenu
         }
 
         public void ModeRemoveMigration()
-        //private  InitializeComponent()
+        //private void InitializeComponent()
         {
-            
+
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
@@ -736,9 +736,8 @@ namespace TestMenu
         }
 
         public void ModeGenerateSqlScript()
-        //private  InitializeComponent()
+        //private void InitializeComponent()
         {
-            
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxToMigration = new System.Windows.Forms.ComboBox();
@@ -751,7 +750,6 @@ namespace TestMenu
             this.label_startup_project = new System.Windows.Forms.Label();
             this.comboBoxMigrationProject = new System.Windows.Forms.ComboBox();
             this.label_migrations_project = new System.Windows.Forms.Label();
-            this.comboBox8 = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.checkBoxTransactions = new System.Windows.Forms.CheckBox();
             this.checkBoxIdempotent = new System.Windows.Forms.CheckBox();
@@ -837,11 +835,11 @@ namespace TestMenu
             this.comboBoxFromMigration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxFromMigration.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxFromMigration.FormattingEnabled = true;
-            this.comboBoxFromMigration.Location = new System.Drawing.Point(161, 34);
+            this.comboBoxFromMigration.Location = new System.Drawing.Point(161, 35);
             this.comboBoxFromMigration.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxFromMigration.Name = "comboBoxFromMigration";
             this.comboBoxFromMigration.Size = new System.Drawing.Size(353, 24);
-            this.comboBoxFromMigration.TabIndex = 10;
+            this.comboBoxFromMigration.TabIndex = 0;
             this.comboBoxFromMigration.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxFromMigration_Validating);
             // 
             // label9
@@ -926,13 +924,6 @@ namespace TestMenu
             this.label_migrations_project.Size = new System.Drawing.Size(127, 15);
             this.label_migrations_project.TabIndex = 2;
             this.label_migrations_project.Text = "Migrations project:";
-            // 
-            // comboBox8
-            // 
-            this.comboBox8.Location = new System.Drawing.Point(0, 0);
-            this.comboBox8.Name = "comboBox8";
-            this.comboBox8.Size = new System.Drawing.Size(121, 21);
-            this.comboBox8.TabIndex = 0;
             // 
             // groupBox2
             // 
@@ -1182,12 +1173,12 @@ namespace TestMenu
         }
 
         public void ModeUpdateDatabase()
-        //private  InitializeComponent()
+        //private void InitializeComponent()
         {
-            
+
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.comboBoxTargetMigration = new System.Windows.Forms.ComboBox();
+            this.comboBoxToMigration = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -1214,7 +1205,7 @@ namespace TestMenu
             this.errorProvider_comboBoxMigrationProject = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxStartupProject = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxDbContextClass = new System.Windows.Forms.ErrorProvider(this.components);
-            this.errorProvider_comboBoxTargetMigration = new System.Windows.Forms.ErrorProvider(this.components);
+            this.errorProvider_comboBoxToMigration = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxConnection = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -1223,14 +1214,14 @@ namespace TestMenu
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxMigrationProject)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxStartupProject)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxDbContextClass)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxTargetMigration)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxToMigration)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxConnection)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
             this.groupBox1.AutoSize = true;
-            this.groupBox1.Controls.Add(this.comboBoxTargetMigration);
+            this.groupBox1.Controls.Add(this.comboBoxToMigration);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.comboBoxDbContextClass);
             this.groupBox1.Controls.Add(this.label3);
@@ -1247,17 +1238,17 @@ namespace TestMenu
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Common";
             // 
-            // comboBoxTargetMigration
+            // comboBoxToMigration
             // 
-            this.comboBoxTargetMigration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxTargetMigration.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBoxTargetMigration.FormattingEnabled = true;
-            this.comboBoxTargetMigration.Location = new System.Drawing.Point(161, 24);
-            this.comboBoxTargetMigration.Margin = new System.Windows.Forms.Padding(4);
-            this.comboBoxTargetMigration.Name = "comboBoxTargetMigration";
-            this.comboBoxTargetMigration.Size = new System.Drawing.Size(353, 24);
-            this.comboBoxTargetMigration.TabIndex = 12;
-            this.comboBoxTargetMigration.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxTargetMigration_Validating);
+            this.comboBoxToMigration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxToMigration.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxToMigration.FormattingEnabled = true;
+            this.comboBoxToMigration.Location = new System.Drawing.Point(161, 24);
+            this.comboBoxToMigration.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxToMigration.Name = "comboBoxToMigration";
+            this.comboBoxToMigration.Size = new System.Drawing.Size(353, 24);
+            this.comboBoxToMigration.TabIndex = 12;
+            this.comboBoxToMigration.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxToMigration_Validating);
             // 
             // label8
             // 
@@ -1531,9 +1522,9 @@ namespace TestMenu
             // 
             this.errorProvider_comboBoxDbContextClass.ContainerControl = this;
             // 
-            // errorProvider_comboBoxTargetMigration
+            // errorProvider_comboBoxToMigration
             // 
-            this.errorProvider_comboBoxTargetMigration.ContainerControl = this;
+            this.errorProvider_comboBoxToMigration.ContainerControl = this;
             // 
             // errorProvider_comboBoxConnection
             // 
@@ -1570,7 +1561,7 @@ namespace TestMenu
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxMigrationProject)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxStartupProject)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxDbContextClass)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxTargetMigration)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxToMigration)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxConnection)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -1578,9 +1569,9 @@ namespace TestMenu
         }
 
         public void ModeDropDatabase()
-        //private  InitializeComponent()
+        //private void InitializeComponent()
         {
-            
+
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
@@ -1894,10 +1885,8 @@ namespace TestMenu
         private System.Windows.Forms.TextBox textBoxScript;
         private System.Windows.Forms.Label migration_name;
         private System.Windows.Forms.ComboBox comboBox7;
-        private System.Windows.Forms.ComboBox comboBoxTargetMigration;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBoxConnection;
-        private System.Windows.Forms.ComboBox comboBox8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox checkBoxTransactions;
         private System.Windows.Forms.CheckBox checkBoxIdempotent;
@@ -1912,9 +1901,8 @@ namespace TestMenu
         private System.Windows.Forms.ErrorProvider errorProvider_comboBoxDbContextClass;
         private System.Windows.Forms.ErrorProvider errorProvider_comboBoxMigrationFolder;
         private System.Windows.Forms.ErrorProvider errorProvider_comboBoxFromMigration;
-        private System.Windows.Forms.ErrorProvider errorProvider_comboBoxToMigration;
         private System.Windows.Forms.ErrorProvider errorProvider_textBoxScript;
-        private System.Windows.Forms.ErrorProvider errorProvider_comboBoxTargetMigration;
+        private System.Windows.Forms.ErrorProvider errorProvider_comboBoxToMigration;
         private System.Windows.Forms.ErrorProvider errorProvider_comboBoxConnection;
     }
 }

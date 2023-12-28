@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="TestMenu.ada72198-7d58-4174-bfd7-545e46c3c83c" Version="1.4" Language="en-US" Publisher="Afrino.co" />
+        <Identity Id="TestMenu.ada72198-7d58-4174-bfd7-545e46c3c83c" Version="1.5" Language="en-US" Publisher="Afrino.co" />
         <DisplayName>EfCoreUI</DisplayName>
         <Description xml:space="preserve">Embark on an enriched journey with Entity Framework Core within the immersive landscape of Visual Studio, as this plugin seamlessly integrates a sophisticated user interface (UI) for EF Core commands.</Description>
     </Metadata>

@@ -274,13 +274,13 @@ namespace TestMenu
                         if (migrationLst.Count >= 1)
                         {
                             migrationLst.Add("0");
-                            comboBoxTargetMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
-                            comboBoxTargetMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
+                            comboBoxToMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
+                            comboBoxToMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
                         }
                     }
                     else
                     {
-                        comboBoxTargetMigration.Items.Clear();
+                        comboBoxToMigration.Items.Clear();
                     }
                 }
             }
@@ -310,13 +310,13 @@ namespace TestMenu
                     if (migrationLst.Count >= 1)
                     {
                         migrationLst.Add("0");
-                        comboBoxTargetMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
-                        comboBoxTargetMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
+                        comboBoxToMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
+                        comboBoxToMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
                     }
                 }
                 else
                 {
-                    comboBoxTargetMigration.Items.Clear();
+                    comboBoxToMigration.Items.Clear();
                 }
             }
         }
@@ -401,7 +401,7 @@ namespace TestMenu
 
             if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
             {
-                if (string.IsNullOrWhiteSpace(comboBoxTargetMigration.SelectedItem?.ToString()))
+                if (string.IsNullOrWhiteSpace(comboBoxToMigration.SelectedItem?.ToString()))
                 {
                     formWithError = true;
                 }
@@ -545,20 +545,7 @@ namespace TestMenu
             }
         }
 
-        private void comboBoxToMigration_Validating(object sender, CancelEventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(comboBoxToMigration.SelectedItem?.ToString()))
-            {
-                //e.Cancel = true;
-                //comboBoxToMigration.Focus();
-                errorProvider_comboBoxToMigration.SetError(comboBoxToMigration, "This field is Required");
-            }
-            else
-            {
-                //e.Cancel = false;
-                errorProvider_comboBoxToMigration.SetError(comboBoxToMigration, "");
-            }
-        }
+      
 
         private void textBoxScript_Validating(object sender, CancelEventArgs e)
         {
@@ -575,18 +562,18 @@ namespace TestMenu
             }
         }
 
-        private void comboBoxTargetMigration_Validating(object sender, CancelEventArgs e)
+        private void comboBoxToMigration_Validating(object sender, CancelEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(comboBoxTargetMigration.SelectedItem?.ToString()))
+            if (string.IsNullOrWhiteSpace(comboBoxToMigration.SelectedItem?.ToString()))
             {
                 //e.Cancel = true;
-                //comboBoxTargetMigration.Focus();
-                errorProvider_comboBoxTargetMigration.SetError(comboBoxTargetMigration, "This field is Required");
+                //comboBoxToMigration.Focus();
+                errorProvider_comboBoxToMigration.SetError(comboBoxToMigration, "This field is Required");
             }
             else
             {
                 //e.Cancel = false;
-                errorProvider_comboBoxTargetMigration.SetError(comboBoxTargetMigration, "");
+                errorProvider_comboBoxToMigration.SetError(comboBoxToMigration, "");
             }
         }
 
@@ -741,17 +728,17 @@ namespace TestMenu
             else if (_oprationModeEnum == OprationModeEnum.GenerateSqlScript)
             {
                 operation = "migrations script";
-                var from = comboBox8.Text;
-                var to = comboBoxTargetMigration.Text;
+                var from = comboBoxFromMigration.Text;
+                var to = comboBoxToMigration.Text;
                 var outputsql = textBoxScript.Text;
-                var idempotent = checkBoxUseDefaultConnection.Checked ? "--idempotent" : "";
+                var idempotent = checkBoxIdempotent.Checked ? "--idempotent" : "";
                 var no_transactions = checkBoxTransactions.Checked ? "--no-transactions" : "";
                 command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {from} {to} --output {outputsql} {idempotent} {no_transactions} {additionalArgument}";
             }
             else if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
             {
                 operation = "database update";
-                var toMigration = comboBoxTargetMigration.Text;
+                var toMigration = comboBoxToMigration.Text;
                 var concectionString = !checkBoxUseDefaultConnection.Checked && !string.IsNullOrEmpty(comboBoxFromMigration.Text) ? "--connection " + '"' + comboBoxFromMigration.Text.Split(char.Parse("|"))[1] + '"' : "";
 
                 command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {toMigration} {concectionString} {additionalArgument}";
@@ -786,7 +773,6 @@ namespace TestMenu
                 }
             };
             CreateNewOutputConsole();
-            MemoryParameter.OutputPane.Activate();
             // Form2 form2 = new Form2(this);
 
             // رویدادهای خروجی فرآیند
@@ -829,10 +815,10 @@ namespace TestMenu
         private void CreateNewOutputConsole()
         {
             Window window = MemoryParameter.Dte2.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
-            if (!window.Visible)
-            {
-                window.Activate();
-            }
+           
+            window.Activate();
+            window.SetFocus();
+            
 
             Guid outputWindowPaneGuid = Guid.NewGuid();
             MemoryParameter.OutputWindow.CreatePane(
@@ -841,9 +827,9 @@ namespace TestMenu
                 Convert.ToInt32(true), // در حالت‌های خاص ممکن است نیاز به تبدیل شود
                 Convert.ToInt32(true) // در حالت‌های خاص ممکن است نیاز به تبدیل شود
             );
-
             MemoryParameter.OutputWindow.GetPane(ref outputWindowPaneGuid, out var outputPane);
             MemoryParameter.OutputPane = outputPane;
+            MemoryParameter.OutputPane.Activate();
         }
 
         private async Task ShowCmdResult(string msg)
