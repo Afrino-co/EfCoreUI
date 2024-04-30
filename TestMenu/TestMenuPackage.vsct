@@ -108,7 +108,7 @@
         <CommandFlag>DynamicItemStart</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>TextChanges</CommandFlag>
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="guidImages" id="bmpPic2" />
 
         <!-- This text does not appear. -->
         <Strings>
@@ -120,7 +120,7 @@
         <CommandFlag>DynamicItemStart</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>TextChanges</CommandFlag>
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="guidImages" id="bmpPic3" />
 
         <!-- This text does not appear. -->
         <Strings>
@@ -132,7 +132,7 @@
         <CommandFlag>DynamicItemStart</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>TextChanges</CommandFlag>
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="guidImages" id="bmpPic4" />
 
         <!-- This text does not appear. -->
         <Strings>
@@ -144,7 +144,7 @@
         <CommandFlag>DynamicItemStart</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>TextChanges</CommandFlag>
-        <Icon guid="guidImages" id="bmpPic1" />
+        <Icon guid="guidImages" id="bmpPic5" />
 
         <!-- This text does not appear. -->
         <Strings>
@@ -176,7 +176,7 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\Command1.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages" href="Resources\Command1.png" usedList="bmpPic1, bmpPic2, bmpPic3, bmpPic4, bmpPic5, bmpPicStrikethrough" />
 
     </Bitmaps>
   </Commands>
@@ -232,9 +232,9 @@
     <GuidSymbol name="guidImages" value="{91e241ee-0852-478f-906f-f8f06556c105}">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPic3" value="3" />
+      <IDSymbol name="bmpPic4" value="4" />
+      <IDSymbol name="bmpPic5" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
     </GuidSymbol>
 

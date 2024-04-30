@@ -108,9 +108,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Command1.png" />
-    <Content Include="Resources\Command2.png" />
-    <Content Include="Resources\Command3.png" />
-    <Content Include="Resources\Command4.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
