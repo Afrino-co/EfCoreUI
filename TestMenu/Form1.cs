@@ -718,12 +718,12 @@ namespace TestMenu
                 string migrationName = textBox_migration_name.Text;
                 //await Task.Delay(1000);
 
-                command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {migrationName} --output-dir {outputDir} {additionalArgument}";
+                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} \"{migrationName.Replace(" ","_").Trim()}\" --output-dir \"{outputDir}\" {additionalArgument}";
             }
             else if (_oprationModeEnum == OprationModeEnum.RemoveMigration)
             {
                 operation = "migrations remove";
-                command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework}  --force {additionalArgument}";
+                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework}  --force {additionalArgument}";
             }
             else if (_oprationModeEnum == OprationModeEnum.GenerateSqlScript)
             {
@@ -733,7 +733,7 @@ namespace TestMenu
                 var outputsql = textBoxScript.Text;
                 var idempotent = checkBoxIdempotent.Checked ? "--idempotent" : "";
                 var no_transactions = checkBoxTransactions.Checked ? "--no-transactions" : "";
-                command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {from} {to} --output {outputsql} {idempotent} {no_transactions} {additionalArgument}";
+                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {from} {to} --output \"{outputsql}\" {idempotent} {no_transactions} {additionalArgument}";
             }
             else if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
             {
@@ -741,13 +741,13 @@ namespace TestMenu
                 var toMigration = comboBoxToMigration.Text;
                 var concectionString = !checkBoxUseDefaultConnection.Checked && !string.IsNullOrEmpty(comboBoxFromMigration.Text) ? "--connection " + '"' + comboBoxFromMigration.Text.Split(char.Parse("|"))[1] + '"' : "";
 
-                command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {toMigration} {concectionString} {additionalArgument}";
+                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {toMigration} {concectionString} {additionalArgument}";
             }
             else if (_oprationModeEnum == OprationModeEnum.DropDatabase)
             {
                 operation = "database drop";
 
-                command = $"ef {operation} --project {migrationProjectPath} --startup-project {startupProjectPath} --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} --force {additionalArgument}";
+                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} --force {additionalArgument}";
             }
 
             return command;
@@ -756,7 +756,7 @@ namespace TestMenu
         public async Task ExecuteEfCommand(string workingDirectory, string command)
         {
             // مسیر فایل dotnet.exe را تنظیم کنید
-            string dotnetPath = @"C:\Program Files\dotnet\dotnet.exe";
+            string dotnetPath = @"""C:\Program Files\dotnet\dotnet.exe""";
 
             // تشکیل فرآیند برای اجرای دستور CLI
             System.Diagnostics.Process process = new System.Diagnostics.Process
