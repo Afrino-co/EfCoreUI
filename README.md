@@ -147,6 +147,21 @@ Run the following command in CMD:
 ```
 dotnet tool install --global dotnet-ef
 ```
+
+#### **Startup Project**:
+The `Startup project` dropdown lists projects that meet the following criteria:
+- Use `OutputType` set to `Exe` or `WinExe`.
+- Contain a valid entry point (`Main` method).
+
+**Behavior Based on SDK**:
+- Projects using `Microsoft.NET.Sdk.Web` are implicitly considered runnable and do not require `<OutputType>` explicitly set.
+- Projects using `Microsoft.NET.Sdk` default to `Library` unless `<OutputType>` is explicitly set to `Exe` or `WinExe`.
+
+#### **Migration Project**:
+The `Migration project` dropdown includes projects that:
+- Reference EF Core packages.
+- Contain a valid `DbContext` class.
+  
 ---
 
 **Support EfCoreUI Development!**
