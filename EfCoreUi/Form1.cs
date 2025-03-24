@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Markup;
+using VSLangProj;
 
 namespace EfCoreUi
 {
@@ -706,10 +707,23 @@ namespace EfCoreUi
         {
             try
             {
+                bool isTestProject=false;
                 // چک کنید که پروژه قابل اجراست (وبی یا ویندوزی)
-                var outputType = project.Properties.Item("OutputType").Value.ToString(); 
-                return outputType == "1" // Windows Application (1)
-                    || outputType == "3"; // Console Application(3)
+                var outputType = project.Properties.Item("OutputType").Value.ToString();
+                if (project.Object is VSProject vsProject)
+                {
+                    foreach (VSLangProj.Reference reference in vsProject.References)
+                    {
+                        // بررسی نام پکیج (ممکن است نام کامل یا قسمتی از آن باشد)
+                        if (reference.Name.Contains("Test"))
+                        {
+                            isTestProject=true;
+                        }
+                    }
+                }
+           
+                return outputType != "2" && !isTestProject;
+                    
 
             }
             catch
