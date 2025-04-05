@@ -12,6 +12,8 @@ using EnvDTE80;
 using Task = System.Threading.Tasks.Task;
 using Newtonsoft.Json;
 using System.IO;
+using Microsoft.VisualStudio;
+using System.Diagnostics;
 
 namespace EfCoreUi
 {
@@ -43,6 +45,7 @@ namespace EfCoreUi
         /// </summary>
         public const string PackageGuidString = "ebc275fe-8195-4ca0-a424-8e13475dc26d";
 
+
         private DTE _dte;
 
         #region Package Members
@@ -63,6 +66,8 @@ namespace EfCoreUi
             MemoryParameter.OutputWindow = GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
 
+      
+
             _dte = GetService(typeof(DTE)) as DTE;
 
             if (_dte != null)
@@ -71,6 +76,7 @@ namespace EfCoreUi
                 _dte.Events.SolutionEvents.ProjectRemoved += SolutionEventsOnProjectRemoved;
                 _dte.Events.SolutionEvents.ProjectRenamed += SolutionEventsOnProjectRenamed;
                 _dte.Events.BuildEvents.OnBuildDone += BuildEventsOnOnBuildDone;
+                _dte.Events.SolutionEvents.Opened += SolutionEventsOnOpened;
 
 
                 MemoryParameter.Projects = await PreServeService.GetProjects(_dte as DTE2);
@@ -87,7 +93,11 @@ namespace EfCoreUi
 
         }
 
-
+        private async void SolutionEventsOnOpened()
+        {
+            MemoryParameter.Projects = await PreServeService.GetProjects(_dte as DTE2);
+            PreServeService.DetectPreserveRequired();
+        }
 
         private async void SolutionEventsOnProjectRenamed(Project project, string oldname)
         {

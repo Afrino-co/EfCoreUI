@@ -708,8 +708,11 @@ namespace EfCoreUi
             try
             {
                 bool isTestProject=false;
+                if (project.Properties == null) return false;
                 // چک کنید که پروژه قابل اجراست (وبی یا ویندوزی)
                 var outputType = project.Properties.Item("OutputType").Value.ToString();
+                
+
                 if (project.Object is VSProject vsProject)
                 {
                     foreach (VSLangProj.Reference reference in vsProject.References)
