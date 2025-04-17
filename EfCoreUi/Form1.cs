@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -78,6 +80,7 @@ namespace EfCoreUi
         {
             // Task[] tasks = new Task[3];
             await Task.Delay(100);
+     
             // Console.WriteLine(DateTime.Now);
             SetMigrationProjects(MemoryParameter.Dte2);
             // Console.WriteLine(DateTime.Now);
@@ -85,7 +88,14 @@ namespace EfCoreUi
             // Console.WriteLine(DateTime.Now);
             SetBuildConfigurationComboBox();
             // Console.WriteLine(DateTime.Now);
-
+            var creation_methodEnumLst = Enum.GetValues(typeof(creation_methodEnum)).Cast<creation_methodEnum>().Select(v => v.ToString()).ToArray();
+            this.creation_method.Items.AddRange(creation_methodEnumLst);
+            if (string.IsNullOrEmpty(MemoryParameter.CreationMethodSelectedItem))
+            {
+                MemoryParameter.CreationMethodSelectedItem = creation_methodEnum.StartupProject.ToString();
+            }
+            this.creation_method.SelectedItem = MemoryParameter.CreationMethodSelectedItem;
+        
             // tasks[0] = Task.Factory.StartNew(async () => { await SetMigrationProjects(MemoryParameter.Dte2); });
             // tasks[1] = Task.Factory.StartNew(async () => { await SetStartUpProject(MemoryParameter.Dte2); });
             //
@@ -707,11 +717,11 @@ namespace EfCoreUi
         {
             try
             {
-                bool isTestProject=false;
+                bool isTestProject = false;
                 if (project.Properties == null) return false;
                 // چک کنید که پروژه قابل اجراست (وبی یا ویندوزی)
                 var outputType = project.Properties.Item("OutputType").Value.ToString();
-                
+
 
                 if (project.Object is VSProject vsProject)
                 {
@@ -720,13 +730,13 @@ namespace EfCoreUi
                         // بررسی نام پکیج (ممکن است نام کامل یا قسمتی از آن باشد)
                         if (reference.Name.Contains("Test"))
                         {
-                            isTestProject=true;
+                            isTestProject = true;
                         }
                     }
                 }
-           
+
                 return outputType != "2" && !isTestProject;
-                    
+
 
             }
             catch
@@ -759,13 +769,26 @@ namespace EfCoreUi
             {
                 string migrationName = textBox_migration_name.Text;
                 //await Task.Delay(1000);
-
-                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} \"{migrationName.Replace(" ", "_").Trim()}\" --output-dir \"{outputDir}\" {additionalArgument}";
+                command = new StringBuilder($"ef {operation}")
+                    .Append($" --project \"{migrationProjectPath}\"")
+                    .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                    .Append($" --context {dbContextPath}")
+                    .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework} \"{migrationName.Replace(" ", "_").Trim()}\"")
+                    .Append($" --output-dir \"{outputDir}\"")
+                    .Append($" {additionalArgument}")
+                    .ToString();
             }
             else if (_oprationModeEnum == OprationModeEnum.RemoveMigration)
             {
                 operation = "migrations remove";
-                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework}  --force {additionalArgument}";
+                command = new StringBuilder($"ef {operation}")
+                    .Append($" --project \"{migrationProjectPath}\"")
+                    .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                    .Append($" --context {dbContextPath}")
+                    .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework}")
+                    .Append($" --force")
+                    .Append($" {additionalArgument}")
+                    .ToString();
             }
             else if (_oprationModeEnum == OprationModeEnum.GenerateSqlScript)
             {
@@ -775,21 +798,39 @@ namespace EfCoreUi
                 var outputsql = textBoxScript.Text;
                 var idempotent = checkBoxIdempotent.Checked ? "--idempotent" : "";
                 var no_transactions = checkBoxTransactions.Checked ? "--no-transactions" : "";
-                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {from} {to} --output \"{outputsql}\" {idempotent} {no_transactions} {additionalArgument}";
+                command = new StringBuilder($"ef {operation}")
+                   .Append($" --project \"{migrationProjectPath}\"")
+                   .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                   .Append($" --context {dbContextPath}")
+                   .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework} {from} {to}")
+                   .Append($"--output \"{outputsql}\" {idempotent} {no_transactions}")
+                   .Append($" {additionalArgument}")
+                   .ToString();
             }
             else if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
             {
                 operation = "database update";
                 var toMigration = comboBoxToMigration.Text;
                 var concectionString = !checkBoxUseDefaultConnection.Checked && !string.IsNullOrEmpty(comboBoxFromMigration.Text) ? "--connection " + '"' + comboBoxFromMigration.Text.Split(char.Parse("|"))[1] + '"' : "";
-
-                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} {toMigration} {concectionString} {additionalArgument}";
+                command = new StringBuilder($"ef {operation}")
+                 .Append($" --project \"{migrationProjectPath}\"")
+                 .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                 .Append($" --context {dbContextPath}")
+                 .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework} {toMigration} {concectionString}")
+                 .Append($" {additionalArgument}")
+                 .ToString();
             }
             else if (_oprationModeEnum == OprationModeEnum.DropDatabase)
             {
                 operation = "database drop";
-
-                command = $"ef {operation} --project \"{migrationProjectPath}\" --startup-project \"{startupProjectPath}\" --context {dbContextPath} --configuration {buildConfiguration} {buildMode} {targetFramework} --force {additionalArgument}";
+                command = new StringBuilder($"ef {operation}")
+                .Append($" --project \"{migrationProjectPath}\"")
+                .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                .Append($" --context {dbContextPath}")
+                .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework}")
+                .Append($" --force")
+                .Append($" {additionalArgument}")
+                .ToString();
             }
 
             return command;
@@ -1071,6 +1112,16 @@ namespace EfCoreUi
             {
                 comboBoxConnection.Enabled = true;
             }
+        }
+
+
+        private void creation_method_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (creation_method.SelectedItem != creation_methodEnum.StartupProject.ToString())
+            {
+                this.comboBoxStartupProject.Enabled = false;
+            }
+            MemoryParameter.CreationMethodSelectedItem = creation_method.SelectedItem.ToString();
         }
     }
 

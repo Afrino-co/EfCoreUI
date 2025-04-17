@@ -54,9 +54,10 @@ namespace EfCoreUi
         public void ModeAddMigration()
         //private void InitializeComponent()
         {
-
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.creation_method = new System.Windows.Forms.ComboBox();
+            this.creation_method_label = new System.Windows.Forms.Label();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBoxStartupProject = new System.Windows.Forms.ComboBox();
@@ -99,6 +100,8 @@ namespace EfCoreUi
             // groupBox1
             // 
             this.groupBox1.AutoSize = true;
+            this.groupBox1.Controls.Add(this.creation_method);
+            this.groupBox1.Controls.Add(this.creation_method_label);
             this.groupBox1.Controls.Add(this.comboBoxDbContextClass);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.comboBoxStartupProject);
@@ -111,17 +114,40 @@ namespace EfCoreUi
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(567, 205);
+            this.groupBox1.Size = new System.Drawing.Size(567, 244);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Common";
+            // 
+            // creation_method
+            // 
+            this.creation_method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.creation_method.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method.FormattingEnabled = true;
+            this.creation_method.Location = new System.Drawing.Point(162, 110);
+            this.creation_method.Margin = new System.Windows.Forms.Padding(4);
+            this.creation_method.Name = "creation_method";
+            this.creation_method.Size = new System.Drawing.Size(353, 24);
+            this.creation_method.TabIndex = 10;
+            this.creation_method.SelectedIndexChanged += new System.EventHandler(this.creation_method_SelectedIndexChanged);
+            // 
+            // creation_method_label
+            // 
+            this.creation_method_label.AutoSize = true;
+            this.creation_method_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method_label.Location = new System.Drawing.Point(20, 114);
+            this.creation_method_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.creation_method_label.Name = "creation_method_label";
+            this.creation_method_label.Size = new System.Drawing.Size(117, 15);
+            this.creation_method_label.TabIndex = 9;
+            this.creation_method_label.Text = "Creation Method:";
             // 
             // comboBoxDbContextClass
             // 
             this.comboBoxDbContextClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDbContextClass.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxDbContextClass.FormattingEnabled = true;
-            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 158);
+            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 197);
             this.comboBoxDbContextClass.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
@@ -133,7 +159,7 @@ namespace EfCoreUi
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(23, 162);
+            this.label3.Location = new System.Drawing.Point(23, 201);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 15);
@@ -145,7 +171,7 @@ namespace EfCoreUi
             this.comboBoxStartupProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStartupProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxStartupProject.FormattingEnabled = true;
-            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 114);
+            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 153);
             this.comboBoxStartupProject.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxStartupProject.Name = "comboBoxStartupProject";
             this.comboBoxStartupProject.Size = new System.Drawing.Size(353, 24);
@@ -157,7 +183,7 @@ namespace EfCoreUi
             // 
             this.label_startup_project.AutoSize = true;
             this.label_startup_project.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_startup_project.Location = new System.Drawing.Point(23, 118);
+            this.label_startup_project.Location = new System.Drawing.Point(23, 157);
             this.label_startup_project.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_startup_project.Name = "label_startup_project";
             this.label_startup_project.Size = new System.Drawing.Size(105, 15);
@@ -169,7 +195,7 @@ namespace EfCoreUi
             this.comboBoxMigrationProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxMigrationProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxMigrationProject.FormattingEnabled = true;
-            this.comboBoxMigrationProject.Location = new System.Drawing.Point(161, 71);
+            this.comboBoxMigrationProject.Location = new System.Drawing.Point(161, 67);
             this.comboBoxMigrationProject.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxMigrationProject.Name = "comboBoxMigrationProject";
             this.comboBoxMigrationProject.Size = new System.Drawing.Size(353, 24);
@@ -181,7 +207,7 @@ namespace EfCoreUi
             // 
             this.label_migrations_project.AutoSize = true;
             this.label_migrations_project.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_migrations_project.Location = new System.Drawing.Point(19, 75);
+            this.label_migrations_project.Location = new System.Drawing.Point(19, 71);
             this.label_migrations_project.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_migrations_project.Name = "label_migrations_project";
             this.label_migrations_project.Size = new System.Drawing.Size(127, 15);
@@ -192,7 +218,7 @@ namespace EfCoreUi
             // 
             this.textBox_migration_name.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBox_migration_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox_migration_name.Location = new System.Drawing.Point(161, 32);
+            this.textBox_migration_name.Location = new System.Drawing.Point(161, 28);
             this.textBox_migration_name.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_migration_name.Name = "textBox_migration_name";
             this.textBox_migration_name.Size = new System.Drawing.Size(353, 22);
@@ -203,7 +229,7 @@ namespace EfCoreUi
             // 
             this.migration_name.AutoSize = true;
             this.migration_name.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.migration_name.Location = new System.Drawing.Point(23, 33);
+            this.migration_name.Location = new System.Drawing.Point(23, 29);
             this.migration_name.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.migration_name.Name = "migration_name";
             this.migration_name.Size = new System.Drawing.Size(112, 15);
@@ -214,7 +240,7 @@ namespace EfCoreUi
             // 
             this.groupBox2.Controls.Add(this.comboBoxMigrationFolder);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(19, 223);
+            this.groupBox2.Location = new System.Drawing.Point(19, 261);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(567, 79);
             this.groupBox2.TabIndex = 2;
@@ -271,7 +297,7 @@ namespace EfCoreUi
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.comboBoxBuildConfig);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(19, 309);
+            this.groupBox3.Location = new System.Drawing.Point(19, 347);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(567, 145);
             this.groupBox3.TabIndex = 12;
@@ -336,9 +362,9 @@ namespace EfCoreUi
             // 
             this.groupBox4.Controls.Add(this.textBoxAdditionalArg);
             this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Location = new System.Drawing.Point(19, 462);
+            this.groupBox4.Location = new System.Drawing.Point(19, 500);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(567, 107);
+            this.groupBox4.Size = new System.Drawing.Size(567, 84);
             this.groupBox4.TabIndex = 13;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Execution";
@@ -436,9 +462,10 @@ namespace EfCoreUi
         public void ModeRemoveMigration()
         //private void InitializeComponent()
         {
-
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.creation_method = new System.Windows.Forms.ComboBox();
+            this.creation_method_label = new System.Windows.Forms.Label();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBoxStartupProject = new System.Windows.Forms.ComboBox();
@@ -467,10 +494,12 @@ namespace EfCoreUi
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxStartupProject)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxDbContextClass)).BeginInit();
             this.SuspendLayout();
-            //
-            //groupBox1
-            //
+            // 
+            // groupBox1
+            // 
             this.groupBox1.AutoSize = true;
+            this.groupBox1.Controls.Add(this.creation_method);
+            this.groupBox1.Controls.Add(this.creation_method_label);
             this.groupBox1.Controls.Add(this.comboBoxDbContextClass);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.comboBoxStartupProject);
@@ -481,87 +510,108 @@ namespace EfCoreUi
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(567, 164);
+            this.groupBox1.Size = new System.Drawing.Size(567, 206);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Common";
-            //
-            //comboBox3
-            //
+            // 
+            // creation_method
+            // 
+            this.creation_method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.creation_method.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method.FormattingEnabled = true;
+            this.creation_method.Location = new System.Drawing.Point(162, 71);
+            this.creation_method.Margin = new System.Windows.Forms.Padding(4);
+            this.creation_method.Name = "creation_method";
+            this.creation_method.Size = new System.Drawing.Size(353, 24);
+            this.creation_method.TabIndex = 10;
+            this.creation_method.SelectedIndexChanged += new System.EventHandler(this.creation_method_SelectedIndexChanged);
+            // 
+            // creation_method_label
+            // 
+            this.creation_method_label.AutoSize = true;
+            this.creation_method_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method_label.Location = new System.Drawing.Point(20, 75);
+            this.creation_method_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.creation_method_label.Name = "creation_method_label";
+            this.creation_method_label.Size = new System.Drawing.Size(117, 15);
+            this.creation_method_label.TabIndex = 9;
+            this.creation_method_label.Text = "Creation Method:";
+            // 
+            // comboBoxDbContextClass
+            // 
             this.comboBoxDbContextClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDbContextClass.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxDbContextClass.FormattingEnabled = true;
-            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 117);
+            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 159);
             this.comboBoxDbContextClass.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
             this.comboBoxDbContextClass.TabIndex = 8;
             this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxDbContextClass_SelectedIndexChanged);
             this.comboBoxDbContextClass.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxDbContextClass_Validating);
-            //
-            //label3
-            //
+            // 
+            // label3
+            // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(23, 121);
+            this.label3.Location = new System.Drawing.Point(23, 163);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 15);
             this.label3.TabIndex = 7;
             this.label3.Text = "DbContext class:";
-            //
-            //comboBox2
-            //
+            // 
+            // comboBoxStartupProject
+            // 
             this.comboBoxStartupProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStartupProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxStartupProject.FormattingEnabled = true;
-            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 73);
+            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 115);
             this.comboBoxStartupProject.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxStartupProject.Name = "comboBoxStartupProject";
             this.comboBoxStartupProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxStartupProject.TabIndex = 6;
             this.comboBoxStartupProject.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             this.comboBoxStartupProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxStartupProject_Validating);
-
-            //
-            //label2
-            //
+            // 
+            // label_startup_project
+            // 
             this.label_startup_project.AutoSize = true;
             this.label_startup_project.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_startup_project.Location = new System.Drawing.Point(23, 77);
+            this.label_startup_project.Location = new System.Drawing.Point(23, 119);
             this.label_startup_project.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_startup_project.Name = "label_startup_project";
             this.label_startup_project.Size = new System.Drawing.Size(105, 15);
             this.label_startup_project.TabIndex = 5;
             this.label_startup_project.Text = "Startup project:";
-            //
-            //comboBox1
-            //
+            // 
+            // comboBoxMigrationProject
+            // 
             this.comboBoxMigrationProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxMigrationProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxMigrationProject.FormattingEnabled = true;
-            this.comboBoxMigrationProject.Location = new System.Drawing.Point(161, 30);
+            this.comboBoxMigrationProject.Location = new System.Drawing.Point(161, 28);
             this.comboBoxMigrationProject.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxMigrationProject.Name = "comboBoxMigrationProject";
             this.comboBoxMigrationProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxMigrationProject.TabIndex = 4;
             this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBoxMigrationProject_SelectedIndexChanged);
             this.comboBoxMigrationProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxMigrationProject_Validating);
-
-            //
-            //label1
-            //
+            // 
+            // label_migrations_project
+            // 
             this.label_migrations_project.AutoSize = true;
             this.label_migrations_project.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_migrations_project.Location = new System.Drawing.Point(19, 34);
+            this.label_migrations_project.Location = new System.Drawing.Point(19, 32);
             this.label_migrations_project.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_migrations_project.Name = "label_migrations_project";
             this.label_migrations_project.Size = new System.Drawing.Size(127, 15);
             this.label_migrations_project.TabIndex = 2;
             this.label_migrations_project.Text = "Migrations project:";
-            //
-            //button1
-            //
+            // 
+            // button1
+            // 
             this.button1.Location = new System.Drawing.Point(388, 454);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(91, 29);
@@ -569,9 +619,9 @@ namespace EfCoreUi
             this.button1.Text = "OK";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            //
-            //button2
-            //
+            // 
+            // button2
+            // 
             this.button2.Location = new System.Drawing.Point(495, 454);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(91, 29);
@@ -579,23 +629,23 @@ namespace EfCoreUi
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            //
-            //groupBox3
-            //
+            // 
+            // groupBox3
+            // 
             this.groupBox3.Controls.Add(this.checkBox1);
             this.groupBox3.Controls.Add(this.comboBoxTargetFramework);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.comboBoxBuildConfig);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(19, 179);
+            this.groupBox3.Location = new System.Drawing.Point(19, 220);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(567, 145);
             this.groupBox3.TabIndex = 12;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Build Options";
-            //
-            //checkBox1
-            //
+            // 
+            // checkBox1
+            // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(22, 29);
             this.checkBox1.Name = "checkBox1";
@@ -604,9 +654,9 @@ namespace EfCoreUi
             this.checkBox1.Text = "Skip project build process (--no-build)";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            //
-            //comboBox6
-            //
+            // 
+            // comboBoxTargetFramework
+            // 
             this.comboBoxTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTargetFramework.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxTargetFramework.FormattingEnabled = true;
@@ -615,9 +665,9 @@ namespace EfCoreUi
             this.comboBoxTargetFramework.Name = "comboBoxTargetFramework";
             this.comboBoxTargetFramework.Size = new System.Drawing.Size(353, 24);
             this.comboBoxTargetFramework.TabIndex = 13;
-            //
-            //label6
-            //
+            // 
+            // label6
+            // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(18, 108);
@@ -625,9 +675,9 @@ namespace EfCoreUi
             this.label6.Size = new System.Drawing.Size(132, 16);
             this.label6.TabIndex = 12;
             this.label6.Text = "Target framework:";
-            //
-            //comboBox5
-            //
+            // 
+            // comboBoxBuildConfig
+            // 
             this.comboBoxBuildConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxBuildConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxBuildConfig.FormattingEnabled = true;
@@ -637,9 +687,9 @@ namespace EfCoreUi
             this.comboBoxBuildConfig.Size = new System.Drawing.Size(353, 24);
             this.comboBoxBuildConfig.TabIndex = 11;
             this.comboBoxBuildConfig.SelectedIndexChanged += new System.EventHandler(this.comboBox5_SelectedIndexChanged);
-            //
-            //label5
-            //
+            // 
+            // label5
+            // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(18, 66);
@@ -647,20 +697,20 @@ namespace EfCoreUi
             this.label5.Size = new System.Drawing.Size(139, 16);
             this.label5.TabIndex = 10;
             this.label5.Text = "Build configuration:";
-            //
-            //groupBox4
-            //
+            // 
+            // groupBox4
+            // 
             this.groupBox4.Controls.Add(this.textBoxAdditionalArg);
             this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Location = new System.Drawing.Point(19, 325);
+            this.groupBox4.Location = new System.Drawing.Point(19, 366);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(567, 107);
+            this.groupBox4.Size = new System.Drawing.Size(567, 82);
             this.groupBox4.TabIndex = 13;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Execution";
-            //
-            //textBox2
-            //
+            // 
+            // textBoxAdditionalArg
+            // 
             this.textBoxAdditionalArg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxAdditionalArg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxAdditionalArg.Location = new System.Drawing.Point(177, 28);
@@ -670,9 +720,9 @@ namespace EfCoreUi
             this.textBoxAdditionalArg.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.textBoxAdditionalArg.Size = new System.Drawing.Size(353, 38);
             this.textBoxAdditionalArg.TabIndex = 9;
-            //
-            //label7
-            //
+            // 
+            // label7
+            // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(18, 30);
@@ -680,9 +730,9 @@ namespace EfCoreUi
             this.label7.Size = new System.Drawing.Size(157, 16);
             this.label7.TabIndex = 15;
             this.label7.Text = "Additional arguments:";
-            //
-            //button3
-            //
+            // 
+            // button3
+            // 
             this.button3.Location = new System.Drawing.Point(19, 454);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(91, 29);
@@ -702,9 +752,9 @@ namespace EfCoreUi
             // errorProvider_comboBoxDbContextClass
             // 
             this.errorProvider_comboBoxDbContextClass.ContainerControl = this;
-            //
-            //Form1
-            //
+            // 
+            // Form1
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 492);
@@ -733,6 +783,7 @@ namespace EfCoreUi
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxDbContextClass)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         public void ModeGenerateSqlScript()
@@ -741,6 +792,8 @@ namespace EfCoreUi
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.comboBoxToMigration = new System.Windows.Forms.ComboBox();
+            this.creation_method = new System.Windows.Forms.ComboBox();
+            this.creation_method_label = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.comboBoxFromMigration = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -789,6 +842,8 @@ namespace EfCoreUi
             // 
             this.groupBox1.AutoSize = true;
             this.groupBox1.Controls.Add(this.comboBoxToMigration);
+            this.groupBox1.Controls.Add(this.creation_method);
+            this.groupBox1.Controls.Add(this.creation_method_label);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.comboBoxFromMigration);
             this.groupBox1.Controls.Add(this.label9);
@@ -802,7 +857,7 @@ namespace EfCoreUi
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(567, 248);
+            this.groupBox1.Size = new System.Drawing.Size(567, 289);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Common";
@@ -812,18 +867,41 @@ namespace EfCoreUi
             this.comboBoxToMigration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxToMigration.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxToMigration.FormattingEnabled = true;
-            this.comboBoxToMigration.Location = new System.Drawing.Point(161, 77);
+            this.comboBoxToMigration.Location = new System.Drawing.Point(161, 73);
             this.comboBoxToMigration.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxToMigration.Name = "comboBoxToMigration";
             this.comboBoxToMigration.Size = new System.Drawing.Size(353, 24);
             this.comboBoxToMigration.TabIndex = 12;
             this.comboBoxToMigration.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxToMigration_Validating);
             // 
+            // creation_method
+            // 
+            this.creation_method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.creation_method.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method.FormattingEnabled = true;
+            this.creation_method.Location = new System.Drawing.Point(162, 155);
+            this.creation_method.Margin = new System.Windows.Forms.Padding(4);
+            this.creation_method.Name = "creation_method";
+            this.creation_method.Size = new System.Drawing.Size(353, 24);
+            this.creation_method.TabIndex = 10;
+            this.creation_method.SelectedIndexChanged += new System.EventHandler(this.creation_method_SelectedIndexChanged);
+            // 
+            // creation_method_label
+            // 
+            this.creation_method_label.AutoSize = true;
+            this.creation_method_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method_label.Location = new System.Drawing.Point(20, 159);
+            this.creation_method_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.creation_method_label.Name = "creation_method_label";
+            this.creation_method_label.Size = new System.Drawing.Size(117, 15);
+            this.creation_method_label.TabIndex = 9;
+            this.creation_method_label.Text = "Creation Method:";
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(19, 80);
+            this.label8.Location = new System.Drawing.Point(19, 76);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(92, 15);
@@ -835,7 +913,7 @@ namespace EfCoreUi
             this.comboBoxFromMigration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxFromMigration.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxFromMigration.FormattingEnabled = true;
-            this.comboBoxFromMigration.Location = new System.Drawing.Point(161, 35);
+            this.comboBoxFromMigration.Location = new System.Drawing.Point(161, 31);
             this.comboBoxFromMigration.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxFromMigration.Name = "comboBoxFromMigration";
             this.comboBoxFromMigration.Size = new System.Drawing.Size(353, 24);
@@ -846,7 +924,7 @@ namespace EfCoreUi
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(19, 38);
+            this.label9.Location = new System.Drawing.Point(19, 34);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(109, 15);
@@ -858,7 +936,7 @@ namespace EfCoreUi
             this.comboBoxDbContextClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDbContextClass.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxDbContextClass.FormattingEnabled = true;
-            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 201);
+            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 242);
             this.comboBoxDbContextClass.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
@@ -870,7 +948,7 @@ namespace EfCoreUi
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(23, 205);
+            this.label3.Location = new System.Drawing.Point(23, 246);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 15);
@@ -882,7 +960,7 @@ namespace EfCoreUi
             this.comboBoxStartupProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStartupProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxStartupProject.FormattingEnabled = true;
-            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 157);
+            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 198);
             this.comboBoxStartupProject.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxStartupProject.Name = "comboBoxStartupProject";
             this.comboBoxStartupProject.Size = new System.Drawing.Size(353, 24);
@@ -894,7 +972,7 @@ namespace EfCoreUi
             // 
             this.label_startup_project.AutoSize = true;
             this.label_startup_project.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_startup_project.Location = new System.Drawing.Point(23, 161);
+            this.label_startup_project.Location = new System.Drawing.Point(23, 202);
             this.label_startup_project.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_startup_project.Name = "label_startup_project";
             this.label_startup_project.Size = new System.Drawing.Size(105, 15);
@@ -931,7 +1009,7 @@ namespace EfCoreUi
             this.groupBox2.Controls.Add(this.checkBoxIdempotent);
             this.groupBox2.Controls.Add(this.textBoxScript);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(19, 268);
+            this.groupBox2.Location = new System.Drawing.Point(19, 304);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(567, 120);
             this.groupBox2.TabIndex = 2;
@@ -1005,7 +1083,7 @@ namespace EfCoreUi
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.comboBoxBuildConfig);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(19, 391);
+            this.groupBox3.Location = new System.Drawing.Point(19, 427);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(567, 145);
             this.groupBox3.TabIndex = 12;
@@ -1070,9 +1148,9 @@ namespace EfCoreUi
             // 
             this.groupBox4.Controls.Add(this.textBoxAdditionalArg);
             this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Location = new System.Drawing.Point(19, 544);
+            this.groupBox4.Location = new System.Drawing.Point(19, 579);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(567, 107);
+            this.groupBox4.Size = new System.Drawing.Size(567, 80);
             this.groupBox4.TabIndex = 13;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Execution";
@@ -1175,9 +1253,10 @@ namespace EfCoreUi
         public void ModeUpdateDatabase()
         //private void InitializeComponent()
         {
-
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.creation_method = new System.Windows.Forms.ComboBox();
+            this.creation_method_label = new System.Windows.Forms.Label();
             this.comboBoxToMigration = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
@@ -1221,6 +1300,8 @@ namespace EfCoreUi
             // groupBox1
             // 
             this.groupBox1.AutoSize = true;
+            this.groupBox1.Controls.Add(this.creation_method);
+            this.groupBox1.Controls.Add(this.creation_method_label);
             this.groupBox1.Controls.Add(this.comboBoxToMigration);
             this.groupBox1.Controls.Add(this.label8);
             this.groupBox1.Controls.Add(this.comboBoxDbContextClass);
@@ -1233,17 +1314,40 @@ namespace EfCoreUi
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(567, 195);
+            this.groupBox1.Size = new System.Drawing.Size(567, 234);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Common";
+            // 
+            // creation_method
+            // 
+            this.creation_method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.creation_method.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method.FormattingEnabled = true;
+            this.creation_method.Location = new System.Drawing.Point(162, 102);
+            this.creation_method.Margin = new System.Windows.Forms.Padding(4);
+            this.creation_method.Name = "creation_method";
+            this.creation_method.Size = new System.Drawing.Size(353, 24);
+            this.creation_method.TabIndex = 10;
+            this.creation_method.SelectedIndexChanged += new System.EventHandler(this.creation_method_SelectedIndexChanged);
+            // 
+            // creation_method_label
+            // 
+            this.creation_method_label.AutoSize = true;
+            this.creation_method_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method_label.Location = new System.Drawing.Point(20, 106);
+            this.creation_method_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.creation_method_label.Name = "creation_method_label";
+            this.creation_method_label.Size = new System.Drawing.Size(117, 15);
+            this.creation_method_label.TabIndex = 9;
+            this.creation_method_label.Text = "Creation Method:";
             // 
             // comboBoxToMigration
             // 
             this.comboBoxToMigration.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxToMigration.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxToMigration.FormattingEnabled = true;
-            this.comboBoxToMigration.Location = new System.Drawing.Point(161, 24);
+            this.comboBoxToMigration.Location = new System.Drawing.Point(161, 22);
             this.comboBoxToMigration.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxToMigration.Name = "comboBoxToMigration";
             this.comboBoxToMigration.Size = new System.Drawing.Size(353, 24);
@@ -1254,7 +1358,7 @@ namespace EfCoreUi
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(19, 27);
+            this.label8.Location = new System.Drawing.Point(19, 25);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(117, 15);
@@ -1266,7 +1370,7 @@ namespace EfCoreUi
             this.comboBoxDbContextClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDbContextClass.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxDbContextClass.FormattingEnabled = true;
-            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 148);
+            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 187);
             this.comboBoxDbContextClass.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
@@ -1278,7 +1382,7 @@ namespace EfCoreUi
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(23, 152);
+            this.label3.Location = new System.Drawing.Point(23, 191);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 15);
@@ -1290,7 +1394,7 @@ namespace EfCoreUi
             this.comboBoxStartupProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStartupProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxStartupProject.FormattingEnabled = true;
-            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 104);
+            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 144);
             this.comboBoxStartupProject.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxStartupProject.Name = "comboBoxStartupProject";
             this.comboBoxStartupProject.Size = new System.Drawing.Size(353, 24);
@@ -1302,7 +1406,7 @@ namespace EfCoreUi
             // 
             this.label_startup_project.AutoSize = true;
             this.label_startup_project.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_startup_project.Location = new System.Drawing.Point(23, 108);
+            this.label_startup_project.Location = new System.Drawing.Point(23, 148);
             this.label_startup_project.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_startup_project.Name = "label_startup_project";
             this.label_startup_project.Size = new System.Drawing.Size(105, 15);
@@ -1338,7 +1442,7 @@ namespace EfCoreUi
             this.groupBox2.Controls.Add(this.comboBoxConnection);
             this.groupBox2.Controls.Add(this.checkBoxUseDefaultConnection);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Location = new System.Drawing.Point(19, 209);
+            this.groupBox2.Location = new System.Drawing.Point(19, 248);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(567, 120);
             this.groupBox2.TabIndex = 2;
@@ -1406,7 +1510,7 @@ namespace EfCoreUi
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.comboBoxBuildConfig);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(19, 332);
+            this.groupBox3.Location = new System.Drawing.Point(19, 371);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(567, 145);
             this.groupBox3.TabIndex = 12;
@@ -1471,9 +1575,9 @@ namespace EfCoreUi
             // 
             this.groupBox4.Controls.Add(this.textBoxAdditionalArg);
             this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Location = new System.Drawing.Point(19, 485);
+            this.groupBox4.Location = new System.Drawing.Point(19, 518);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(567, 107);
+            this.groupBox4.Size = new System.Drawing.Size(567, 84);
             this.groupBox4.TabIndex = 13;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Execution";
@@ -1571,9 +1675,10 @@ namespace EfCoreUi
         public void ModeDropDatabase()
         //private void InitializeComponent()
         {
-
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.creation_method = new System.Windows.Forms.ComboBox();
+            this.creation_method_label = new System.Windows.Forms.Label();
             this.comboBoxDbContextClass = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.comboBoxStartupProject = new System.Windows.Forms.ComboBox();
@@ -1602,10 +1707,12 @@ namespace EfCoreUi
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxStartupProject)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxDbContextClass)).BeginInit();
             this.SuspendLayout();
-            //
-            //groupBox1
-            //
+            // 
+            // groupBox1
+            // 
             this.groupBox1.AutoSize = true;
+            this.groupBox1.Controls.Add(this.creation_method);
+            this.groupBox1.Controls.Add(this.creation_method_label);
             this.groupBox1.Controls.Add(this.comboBoxDbContextClass);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.comboBoxStartupProject);
@@ -1616,87 +1723,108 @@ namespace EfCoreUi
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(567, 164);
+            this.groupBox1.Size = new System.Drawing.Size(567, 202);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Common";
-            //
-            //comboBox3
-            //
+            // 
+            // creation_method
+            // 
+            this.creation_method.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.creation_method.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method.FormattingEnabled = true;
+            this.creation_method.Location = new System.Drawing.Point(162, 71);
+            this.creation_method.Margin = new System.Windows.Forms.Padding(4);
+            this.creation_method.Name = "creation_method";
+            this.creation_method.Size = new System.Drawing.Size(353, 24);
+            this.creation_method.TabIndex = 10;
+            this.creation_method.SelectedIndexChanged += new System.EventHandler(this.creation_method_SelectedIndexChanged);
+            // 
+            // creation_method_label
+            // 
+            this.creation_method_label.AutoSize = true;
+            this.creation_method_label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.creation_method_label.Location = new System.Drawing.Point(20, 75);
+            this.creation_method_label.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.creation_method_label.Name = "creation_method_label";
+            this.creation_method_label.Size = new System.Drawing.Size(117, 15);
+            this.creation_method_label.TabIndex = 9;
+            this.creation_method_label.Text = "Creation Method:";
+            // 
+            // comboBoxDbContextClass
+            // 
             this.comboBoxDbContextClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxDbContextClass.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxDbContextClass.FormattingEnabled = true;
-            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 117);
+            this.comboBoxDbContextClass.Location = new System.Drawing.Point(161, 155);
             this.comboBoxDbContextClass.Margin = new System.Windows.Forms.Padding(4);
-            this.comboBoxDbContextClass.Name = "comboBox3";
+            this.comboBoxDbContextClass.Name = "comboBoxDbContextClass";
             this.comboBoxDbContextClass.Size = new System.Drawing.Size(353, 24);
             this.comboBoxDbContextClass.TabIndex = 8;
             this.comboBoxDbContextClass.SelectedIndexChanged += new System.EventHandler(this.comboBoxDbContextClass_SelectedIndexChanged);
             this.comboBoxDbContextClass.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxDbContextClass_Validating);
-            //
-            //label3
-            //
+            // 
+            // label3
+            // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(23, 121);
+            this.label3.Location = new System.Drawing.Point(23, 159);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(114, 15);
             this.label3.TabIndex = 7;
             this.label3.Text = "DbContext class:";
-            //
-            //comboBox2
-            //
+            // 
+            // comboBoxStartupProject
+            // 
             this.comboBoxStartupProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStartupProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxStartupProject.FormattingEnabled = true;
-            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 73);
+            this.comboBoxStartupProject.Location = new System.Drawing.Point(161, 113);
             this.comboBoxStartupProject.Margin = new System.Windows.Forms.Padding(4);
-            this.comboBoxStartupProject.Name = "comboBox2";
+            this.comboBoxStartupProject.Name = "comboBoxStartupProject";
             this.comboBoxStartupProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxStartupProject.TabIndex = 6;
             this.comboBoxStartupProject.SelectedIndexChanged += new System.EventHandler(this.comboBox2_SelectedIndexChanged);
             this.comboBoxStartupProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxStartupProject_Validating);
-
-            //
-            //label2
-            //
+            // 
+            // label_startup_project
+            // 
             this.label_startup_project.AutoSize = true;
             this.label_startup_project.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label_startup_project.Location = new System.Drawing.Point(23, 77);
+            this.label_startup_project.Location = new System.Drawing.Point(23, 117);
             this.label_startup_project.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_startup_project.Name = "label_startup_project";
             this.label_startup_project.Size = new System.Drawing.Size(105, 15);
             this.label_startup_project.TabIndex = 5;
             this.label_startup_project.Text = "Startup project:";
-            //
-            //comboBox1
-            //
+            // 
+            // comboBoxMigrationProject
+            // 
             this.comboBoxMigrationProject.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxMigrationProject.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxMigrationProject.FormattingEnabled = true;
             this.comboBoxMigrationProject.Location = new System.Drawing.Point(161, 30);
             this.comboBoxMigrationProject.Margin = new System.Windows.Forms.Padding(4);
-            this.comboBoxMigrationProject.Name = "comboBox1";
+            this.comboBoxMigrationProject.Name = "comboBoxMigrationProject";
             this.comboBoxMigrationProject.Size = new System.Drawing.Size(353, 24);
             this.comboBoxMigrationProject.TabIndex = 4;
             this.comboBoxMigrationProject.SelectedIndexChanged += new System.EventHandler(this.comboBoxMigrationProject_SelectedIndexChanged);
             this.comboBoxMigrationProject.Validating += new System.ComponentModel.CancelEventHandler(this.comboBoxMigrationProject_Validating);
-
-            //
-            //label1
-            //
+            // 
+            // label_migrations_project
+            // 
             this.label_migrations_project.AutoSize = true;
             this.label_migrations_project.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label_migrations_project.Location = new System.Drawing.Point(19, 34);
             this.label_migrations_project.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label_migrations_project.Name = "label1";
+            this.label_migrations_project.Name = "label_migrations_project";
             this.label_migrations_project.Size = new System.Drawing.Size(127, 15);
             this.label_migrations_project.TabIndex = 2;
             this.label_migrations_project.Text = "Migrations project:";
-            //
-            //button1
-            //
+            // 
+            // button1
+            // 
             this.button1.Location = new System.Drawing.Point(388, 454);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(91, 29);
@@ -1704,9 +1832,9 @@ namespace EfCoreUi
             this.button1.Text = "OK";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            //
-            //button2
-            //
+            // 
+            // button2
+            // 
             this.button2.Location = new System.Drawing.Point(495, 454);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(91, 29);
@@ -1714,23 +1842,23 @@ namespace EfCoreUi
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            //
-            //groupBox3
-            //
+            // 
+            // groupBox3
+            // 
             this.groupBox3.Controls.Add(this.checkBox1);
             this.groupBox3.Controls.Add(this.comboBoxTargetFramework);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.comboBoxBuildConfig);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Location = new System.Drawing.Point(19, 179);
+            this.groupBox3.Location = new System.Drawing.Point(19, 216);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(567, 145);
             this.groupBox3.TabIndex = 12;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Build Options";
-            //
-            //checkBox1
-            //
+            // 
+            // checkBox1
+            // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(22, 29);
             this.checkBox1.Name = "checkBox1";
@@ -1739,20 +1867,20 @@ namespace EfCoreUi
             this.checkBox1.Text = "Skip project build process (--no-build)";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            //
-            //comboBox6
-            //
+            // 
+            // comboBoxTargetFramework
+            // 
             this.comboBoxTargetFramework.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxTargetFramework.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxTargetFramework.FormattingEnabled = true;
             this.comboBoxTargetFramework.Location = new System.Drawing.Point(161, 104);
             this.comboBoxTargetFramework.Margin = new System.Windows.Forms.Padding(4);
-            this.comboBoxTargetFramework.Name = "comboBox6";
+            this.comboBoxTargetFramework.Name = "comboBoxTargetFramework";
             this.comboBoxTargetFramework.Size = new System.Drawing.Size(353, 24);
             this.comboBoxTargetFramework.TabIndex = 13;
-            //
-            //label6
-            //
+            // 
+            // label6
+            // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.Location = new System.Drawing.Point(18, 108);
@@ -1760,21 +1888,21 @@ namespace EfCoreUi
             this.label6.Size = new System.Drawing.Size(132, 16);
             this.label6.TabIndex = 12;
             this.label6.Text = "Target framework:";
-            //
-            //comboBox5
-            //
+            // 
+            // comboBoxBuildConfig
+            // 
             this.comboBoxBuildConfig.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxBuildConfig.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxBuildConfig.FormattingEnabled = true;
             this.comboBoxBuildConfig.Location = new System.Drawing.Point(161, 62);
             this.comboBoxBuildConfig.Margin = new System.Windows.Forms.Padding(4);
-            this.comboBoxBuildConfig.Name = "comboBox5";
+            this.comboBoxBuildConfig.Name = "comboBoxBuildConfig";
             this.comboBoxBuildConfig.Size = new System.Drawing.Size(353, 24);
             this.comboBoxBuildConfig.TabIndex = 11;
             this.comboBoxBuildConfig.SelectedIndexChanged += new System.EventHandler(this.comboBox5_SelectedIndexChanged);
-            //
-            //label5
-            //
+            // 
+            // label5
+            // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.Location = new System.Drawing.Point(18, 66);
@@ -1782,32 +1910,32 @@ namespace EfCoreUi
             this.label5.Size = new System.Drawing.Size(139, 16);
             this.label5.TabIndex = 10;
             this.label5.Text = "Build configuration:";
-            //
-            //groupBox4
-            //
+            // 
+            // groupBox4
+            // 
             this.groupBox4.Controls.Add(this.textBoxAdditionalArg);
             this.groupBox4.Controls.Add(this.label7);
-            this.groupBox4.Location = new System.Drawing.Point(19, 325);
+            this.groupBox4.Location = new System.Drawing.Point(19, 362);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(567, 107);
+            this.groupBox4.Size = new System.Drawing.Size(567, 86);
             this.groupBox4.TabIndex = 13;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Execution";
-            //
-            //textBox2
-            //
+            // 
+            // textBoxAdditionalArg
+            // 
             this.textBoxAdditionalArg.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxAdditionalArg.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxAdditionalArg.Location = new System.Drawing.Point(177, 28);
             this.textBoxAdditionalArg.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxAdditionalArg.Multiline = true;
-            this.textBoxAdditionalArg.Name = "textBox2";
+            this.textBoxAdditionalArg.Name = "textBoxAdditionalArg";
             this.textBoxAdditionalArg.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.textBoxAdditionalArg.Size = new System.Drawing.Size(353, 38);
             this.textBoxAdditionalArg.TabIndex = 9;
-            //
-            //label7
-            //
+            // 
+            // label7
+            // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.Location = new System.Drawing.Point(18, 30);
@@ -1815,9 +1943,9 @@ namespace EfCoreUi
             this.label7.Size = new System.Drawing.Size(157, 16);
             this.label7.TabIndex = 15;
             this.label7.Text = "Additional arguments:";
-            //
-            //button3
-            //
+            // 
+            // button3
+            // 
             this.button3.Location = new System.Drawing.Point(19, 454);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(91, 29);
@@ -1825,9 +1953,21 @@ namespace EfCoreUi
             this.button3.Text = "Preview";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            //
-            //Form1
-            //
+            // 
+            // errorProvider_comboBoxMigrationProject
+            // 
+            this.errorProvider_comboBoxMigrationProject.ContainerControl = this;
+            // 
+            // errorProvider_comboBoxStartupProject
+            // 
+            this.errorProvider_comboBoxStartupProject.ContainerControl = this;
+            // 
+            // errorProvider_comboBoxDbContextClass
+            // 
+            this.errorProvider_comboBoxDbContextClass.ContainerControl = this;
+            // 
+            // Form1
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 492);
@@ -1856,6 +1996,7 @@ namespace EfCoreUi
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider_comboBoxDbContextClass)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
         #endregion
 
@@ -1904,5 +2045,7 @@ namespace EfCoreUi
         private System.Windows.Forms.ErrorProvider errorProvider_textBoxScript;
         private System.Windows.Forms.ErrorProvider errorProvider_comboBoxToMigration;
         private System.Windows.Forms.ErrorProvider errorProvider_comboBoxConnection;
+        private System.Windows.Forms.ComboBox creation_method;
+        private System.Windows.Forms.Label creation_method_label;
     }
 }

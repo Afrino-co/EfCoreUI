@@ -25,4 +25,10 @@ namespace EfCoreUi
         [Display(Name = "Drop Database")]
         DropDatabase,
     }
+    public enum creation_methodEnum
+    {
+        StartupProject,
+        DesignTimeFactory
+
+    }
 }

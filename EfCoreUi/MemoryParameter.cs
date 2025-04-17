@@ -51,6 +51,7 @@ namespace EfCoreUi
         #region build option
 
         public static string BuildConfigSelectedItem { get; set; }
+        public static string CreationMethodSelectedItem { get; set; }
 
         #endregion
     }
