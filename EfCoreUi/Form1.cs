@@ -80,7 +80,7 @@ namespace EfCoreUi
         {
             // Task[] tasks = new Task[3];
             await Task.Delay(100);
-     
+
             // Console.WriteLine(DateTime.Now);
             SetMigrationProjects(MemoryParameter.Dte2);
             // Console.WriteLine(DateTime.Now);
@@ -94,8 +94,14 @@ namespace EfCoreUi
             {
                 MemoryParameter.CreationMethodSelectedItem = creation_methodEnum.StartupProject.ToString();
             }
+            if (MemoryParameter.Form1LoadCount == 0)
+            {
+                MemoryParameter.CreationMethodSelectedItem = creation_methodEnum.StartupProject.ToString();
+            }
+            await Task.Delay(100);
             this.creation_method.SelectedItem = MemoryParameter.CreationMethodSelectedItem;
-        
+            await Task.Delay(100);
+            MemoryParameter.Form1LoadCount++;
             // tasks[0] = Task.Factory.StartNew(async () => { await SetMigrationProjects(MemoryParameter.Dte2); });
             // tasks[1] = Task.Factory.StartNew(async () => { await SetStartUpProject(MemoryParameter.Dte2); });
             //
@@ -1117,10 +1123,10 @@ namespace EfCoreUi
 
         private void creation_method_SelectedIndexChanged(object sender, EventArgs e)
         {
+            this.comboBoxStartupProject.Enabled = true;
             if (creation_method.SelectedItem != creation_methodEnum.StartupProject.ToString())
-            {
                 this.comboBoxStartupProject.Enabled = false;
-            }
+
             MemoryParameter.CreationMethodSelectedItem = creation_method.SelectedItem.ToString();
         }
     }

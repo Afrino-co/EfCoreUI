@@ -52,6 +52,7 @@ namespace EfCoreUi
 
         public static string BuildConfigSelectedItem { get; set; }
         public static string CreationMethodSelectedItem { get; set; }
+        public static int Form1LoadCount { get; set; }
 
         #endregion
     }
