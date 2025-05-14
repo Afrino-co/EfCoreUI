@@ -88,15 +88,16 @@ namespace EfCoreUi
             // Console.WriteLine(DateTime.Now);
             SetBuildConfigurationComboBox();
             // Console.WriteLine(DateTime.Now);
-            var creation_methodEnumLst = Enum.GetValues(typeof(creation_methodEnum)).Cast<creation_methodEnum>().Select(v => v.ToString()).ToArray();
+            //var creation_methodEnumLst = Enum.GetValues(typeof(creation_methodEnum)).Cast<creation_methodEnum>().Select(v => v.ToString()).ToArray();
+            string[] creation_methodEnumLst =new string[]{ MemoryParameter.CMStartupProject, MemoryParameter.CMDesignTimeFactory };
             this.creation_method.Items.AddRange(creation_methodEnumLst);
-            if (string.IsNullOrEmpty(MemoryParameter.CreationMethodSelectedItem))
+            if (string.IsNullOrEmpty(MemoryParameter.CreationMethodSelectedItem) || string.IsNullOrWhiteSpace(MemoryParameter.CreationMethodSelectedItem))
             {
-                MemoryParameter.CreationMethodSelectedItem = creation_methodEnum.StartupProject.ToString();
+                MemoryParameter.CreationMethodSelectedItem = MemoryParameter.CMStartupProject;
             }
             if (MemoryParameter.Form1LoadCount == 0)
             {
-                MemoryParameter.CreationMethodSelectedItem = creation_methodEnum.StartupProject.ToString();
+                MemoryParameter.CreationMethodSelectedItem = MemoryParameter.CMStartupProject;
             }
             await Task.Delay(100);
             this.creation_method.SelectedItem = MemoryParameter.CreationMethodSelectedItem;
@@ -777,7 +778,7 @@ namespace EfCoreUi
                 //await Task.Delay(1000);
                 command = new StringBuilder($"ef {operation}")
                     .Append($" --project \"{migrationProjectPath}\"")
-                    .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                    .Append(this.creation_method.SelectedItem == MemoryParameter.CMStartupProject ? $" --startup-project \"{startupProjectPath}\"" : "")
                     .Append($" --context {dbContextPath}")
                     .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework} \"{migrationName.Replace(" ", "_").Trim()}\"")
                     .Append($" --output-dir \"{outputDir}\"")
@@ -789,7 +790,7 @@ namespace EfCoreUi
                 operation = "migrations remove";
                 command = new StringBuilder($"ef {operation}")
                     .Append($" --project \"{migrationProjectPath}\"")
-                    .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                    .Append(this.creation_method.SelectedItem == MemoryParameter.CMStartupProject ? $" --startup-project \"{startupProjectPath}\"" : "")
                     .Append($" --context {dbContextPath}")
                     .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework}")
                     .Append($" --force")
@@ -806,7 +807,7 @@ namespace EfCoreUi
                 var no_transactions = checkBoxTransactions.Checked ? "--no-transactions" : "";
                 command = new StringBuilder($"ef {operation}")
                    .Append($" --project \"{migrationProjectPath}\"")
-                   .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                   .Append(this.creation_method.SelectedItem == MemoryParameter.CMStartupProject ? $" --startup-project \"{startupProjectPath}\"" : "")
                    .Append($" --context {dbContextPath}")
                    .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework} {from} {to}")
                    .Append($"--output \"{outputsql}\" {idempotent} {no_transactions}")
@@ -820,7 +821,7 @@ namespace EfCoreUi
                 var concectionString = !checkBoxUseDefaultConnection.Checked && !string.IsNullOrEmpty(comboBoxFromMigration.Text) ? "--connection " + '"' + comboBoxFromMigration.Text.Split(char.Parse("|"))[1] + '"' : "";
                 command = new StringBuilder($"ef {operation}")
                  .Append($" --project \"{migrationProjectPath}\"")
-                 .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                 .Append(this.creation_method.SelectedItem == MemoryParameter.CMStartupProject ? $" --startup-project \"{startupProjectPath}\"" : "")
                  .Append($" --context {dbContextPath}")
                  .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework} {toMigration} {concectionString}")
                  .Append($" {additionalArgument}")
@@ -831,7 +832,7 @@ namespace EfCoreUi
                 operation = "database drop";
                 command = new StringBuilder($"ef {operation}")
                 .Append($" --project \"{migrationProjectPath}\"")
-                .Append(this.creation_method.SelectedItem == creation_methodEnum.StartupProject.ToString() ? $" --startup-project \"{startupProjectPath}\"" : "")
+                .Append(this.creation_method.SelectedItem == MemoryParameter.CMStartupProject ? $" --startup-project \"{startupProjectPath}\"" : "")
                 .Append($" --context {dbContextPath}")
                 .Append($" --configuration {buildConfiguration} {buildMode} {targetFramework}")
                 .Append($" --force")
@@ -1124,10 +1125,17 @@ namespace EfCoreUi
         private void creation_method_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.comboBoxStartupProject.Enabled = true;
-            if (creation_method.SelectedItem != creation_methodEnum.StartupProject.ToString())
+            if (creation_method.SelectedItem.ToString() != MemoryParameter.CMStartupProject)
                 this.comboBoxStartupProject.Enabled = false;
 
             MemoryParameter.CreationMethodSelectedItem = creation_method.SelectedItem.ToString();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            ContactUsForm contactUsForm = new ContactUsForm();
+
+            contactUsForm.ShowDialog();
         }
     }
 

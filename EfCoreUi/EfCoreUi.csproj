@@ -46,6 +46,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AllCommand.cs" />
+    <Compile Include="ContactUsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ContactUsForm.Designer.cs">
+      <DependentUpon>ContactUsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,6 +112,9 @@
     <Content Include="Resources\Command1.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ContactUsForm.resx">
+      <DependentUpon>ContactUsForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

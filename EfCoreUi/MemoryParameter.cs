@@ -52,9 +52,12 @@ namespace EfCoreUi
 
         public static string BuildConfigSelectedItem { get; set; }
         public static string CreationMethodSelectedItem { get; set; }
-        public static int Form1LoadCount { get; set; }
+        public const string CMStartupProject = "StartupProject";
+        public const string CMDesignTimeFactory = "DesignTimeFactory";
+
 
         #endregion
+        public static int Form1LoadCount { get; set; }
     }
     public class ConfigParameters
     {

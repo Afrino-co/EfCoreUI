@@ -86,6 +86,7 @@ namespace EfCoreUi
             this.errorProvider_comboBoxStartupProject = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxDbContextClass = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxMigrationFolder = new System.Windows.Forms.ErrorProvider(this.components);
+            this.button4 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -421,11 +422,22 @@ namespace EfCoreUi
             // 
             this.errorProvider_comboBoxMigrationFolder.ContainerControl = this;
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(116, 610);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(91, 29);
+            this.button4.TabIndex = 15;
+            this.button4.Text = "Preview";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 651);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -2047,5 +2059,6 @@ namespace EfCoreUi
         private System.Windows.Forms.ErrorProvider errorProvider_comboBoxConnection;
         private System.Windows.Forms.ComboBox creation_method;
         private System.Windows.Forms.Label creation_method_label;
+        public System.Windows.Forms.Button button4;
     }
 }
