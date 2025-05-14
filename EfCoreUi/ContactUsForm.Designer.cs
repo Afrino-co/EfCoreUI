@@ -48,7 +48,7 @@
             this.ClientSize = new System.Drawing.Size(775, 597);
             this.Controls.Add(this.webBrowser1);
             this.Name = "ContactUsForm";
-            this.Text = "Contact Us ";
+            this.Text = "Code Fuel";
             this.Load += new System.EventHandler(this.ContactUsForm_Load);
             this.ResumeLayout(false);
 

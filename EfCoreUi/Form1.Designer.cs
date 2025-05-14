@@ -86,7 +86,7 @@ namespace EfCoreUi
             this.errorProvider_comboBoxStartupProject = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxDbContextClass = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxMigrationFolder = new System.Windows.Forms.ErrorProvider(this.components);
-            this.button4 = new System.Windows.Forms.Button();
+            this.fuel_button = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -422,22 +422,22 @@ namespace EfCoreUi
             // 
             this.errorProvider_comboBoxMigrationFolder.ContainerControl = this;
             // 
-            // button4
+            // fuel_button
             // 
-            this.button4.Location = new System.Drawing.Point(116, 610);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(91, 29);
-            this.button4.TabIndex = 15;
-            this.button4.Text = "Preview";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.fuel_button.Location = new System.Drawing.Point(116, 610);
+            this.fuel_button.Name = "fuel_button";
+            this.fuel_button.Size = new System.Drawing.Size(91, 29);
+            this.fuel_button.TabIndex = 15;
+            this.fuel_button.Text = "Fuel ";
+            this.fuel_button.UseVisualStyleBackColor = true;
+            this.fuel_button.Click += new System.EventHandler(this.button4_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 651);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.fuel_button);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -499,6 +499,7 @@ namespace EfCoreUi
             this.errorProvider_comboBoxMigrationProject = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxStartupProject = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxDbContextClass = new System.Windows.Forms.ErrorProvider(this.components);
+            this.fuel_button = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -765,11 +766,22 @@ namespace EfCoreUi
             // 
             this.errorProvider_comboBoxDbContextClass.ContainerControl = this;
             // 
+            // fuel_button
+            // 
+            this.fuel_button.Location = new System.Drawing.Point(116, 454);
+            this.fuel_button.Name = "fuel_button";
+            this.fuel_button.Size = new System.Drawing.Size(91, 29);
+            this.fuel_button.TabIndex = 15;
+            this.fuel_button.Text = "Fuel ";
+            this.fuel_button.UseVisualStyleBackColor = true;
+            this.fuel_button.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(605, 492);
+            this.ClientSize = new System.Drawing.Size(605, 497);
+            this.Controls.Add(this.fuel_button);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -838,6 +850,7 @@ namespace EfCoreUi
             this.errorProvider_comboBoxFromMigration = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxToMigration = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_textBoxScript = new System.Windows.Forms.ErrorProvider(this.components);
+            this.fuel_button = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -1223,11 +1236,22 @@ namespace EfCoreUi
             // 
             this.errorProvider_textBoxScript.ContainerControl = this;
             // 
+            // fuel_button
+            // 
+            this.fuel_button.Location = new System.Drawing.Point(116, 675);
+            this.fuel_button.Name = "fuel_button";
+            this.fuel_button.Size = new System.Drawing.Size(91, 29);
+            this.fuel_button.TabIndex = 15;
+            this.fuel_button.Text = "Fuel ";
+            this.fuel_button.UseVisualStyleBackColor = true;
+            this.fuel_button.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 710);
+            this.Controls.Add(this.fuel_button);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -1298,6 +1322,7 @@ namespace EfCoreUi
             this.errorProvider_comboBoxDbContextClass = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxToMigration = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxConnection = new System.Windows.Forms.ErrorProvider(this.components);
+            this.fuel_button = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -1497,7 +1522,7 @@ namespace EfCoreUi
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(388, 614);
+            this.button1.Location = new System.Drawing.Point(388, 608);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(91, 29);
             this.button1.TabIndex = 10;
@@ -1507,7 +1532,7 @@ namespace EfCoreUi
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(495, 614);
+            this.button2.Location = new System.Drawing.Point(495, 608);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(91, 29);
             this.button2.TabIndex = 11;
@@ -1618,7 +1643,7 @@ namespace EfCoreUi
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(19, 614);
+            this.button3.Location = new System.Drawing.Point(19, 608);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(91, 29);
             this.button3.TabIndex = 14;
@@ -1646,11 +1671,22 @@ namespace EfCoreUi
             // 
             this.errorProvider_comboBoxConnection.ContainerControl = this;
             // 
+            // fuel_button
+            // 
+            this.fuel_button.Location = new System.Drawing.Point(116, 608);
+            this.fuel_button.Name = "fuel_button";
+            this.fuel_button.Size = new System.Drawing.Size(91, 29);
+            this.fuel_button.TabIndex = 15;
+            this.fuel_button.Text = "Fuel ";
+            this.fuel_button.UseVisualStyleBackColor = true;
+            this.fuel_button.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 648);
+            this.Controls.Add(this.fuel_button);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -1712,6 +1748,7 @@ namespace EfCoreUi
             this.errorProvider_comboBoxMigrationProject = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxStartupProject = new System.Windows.Forms.ErrorProvider(this.components);
             this.errorProvider_comboBoxDbContextClass = new System.Windows.Forms.ErrorProvider(this.components);
+            this.fuel_button = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -1978,11 +2015,22 @@ namespace EfCoreUi
             // 
             this.errorProvider_comboBoxDbContextClass.ContainerControl = this;
             // 
+            // fuel_button
+            // 
+            this.fuel_button.Location = new System.Drawing.Point(116, 454);
+            this.fuel_button.Name = "fuel_button";
+            this.fuel_button.Size = new System.Drawing.Size(91, 29);
+            this.fuel_button.TabIndex = 15;
+            this.fuel_button.Text = "Fuel ";
+            this.fuel_button.UseVisualStyleBackColor = true;
+            this.fuel_button.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(605, 492);
+            this.ClientSize = new System.Drawing.Size(605, 493);
+            this.Controls.Add(this.fuel_button);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -2059,6 +2107,6 @@ namespace EfCoreUi
         private System.Windows.Forms.ErrorProvider errorProvider_comboBoxConnection;
         private System.Windows.Forms.ComboBox creation_method;
         private System.Windows.Forms.Label creation_method_label;
-        public System.Windows.Forms.Button button4;
+        public System.Windows.Forms.Button fuel_button;
     }
 }
