@@ -398,3 +398,11 @@ FodyWeavers.xsd
 *.sln.iml
 
 .idea/
+
+# Internal / local documentation (public repo keeps README.md only)
+DOCUMENTATION.md
+docs/internal/
+docs/private/
+*.local.md
+NOTES.md
+notes/
