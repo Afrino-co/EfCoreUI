@@ -72,10 +72,12 @@
     <Compile Include="EfCoreUiPackage.cs" />
     <Compile Include="Services\ConnectionStringExtractor.cs" />
     <Compile Include="Services\DotNetPathResolver.cs" />
+    <Compile Include="Services\DotNetEfToolChecker.cs" />
     <Compile Include="Services\EfCommandBuilder.cs" />
     <Compile Include="Services\EfCommandOptions.cs" />
     <Compile Include="Services\EfCommandRunner.cs" />
     <Compile Include="Services\EfCoreUiConfigStore.cs" />
+    <Compile Include="Services\EfMigrationLister.cs" />
     <Compile Include="Services\OutputWindowHelper.cs" />
   </ItemGroup>
   <ItemGroup>

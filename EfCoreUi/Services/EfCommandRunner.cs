@@ -1,5 +1,4 @@
 using CliWrap;
-using CliWrap.Buffered;
 using System;
 using System.Threading.Tasks;
 
@@ -12,9 +11,16 @@ namespace EfCoreUi.Services
             var dotnetPath = DotNetPathResolver.ResolveDotNetExecutable();
             if (string.IsNullOrEmpty(dotnetPath))
             {
-                var message = "dotnet executable not found. Install the .NET SDK and run: dotnet tool install --global dotnet-ef";
+                var message = "dotnet executable not found. Install the .NET SDK and run: " + DotNetEfToolChecker.InstallCommand;
                 OutputWindowHelper.CreatePane($"EfCoreUI Output Log {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 OutputWindowHelper.WriteError(message);
+                return -1;
+            }
+
+            if (!await DotNetEfToolChecker.IsInstalledAsync())
+            {
+                OutputWindowHelper.CreatePane($"EfCoreUI Output Log {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                OutputWindowHelper.WriteError(DotNetEfToolChecker.GetInstallMessage());
                 return -1;
             }
 
@@ -27,17 +33,9 @@ namespace EfCoreUi.Services
                     .WithArguments(efArguments)
                     .WithWorkingDirectory(workingDirectory)
                     .WithValidation(CommandResultValidation.None)
-                    .ExecuteBufferedAsync();
-
-                if (!string.IsNullOrWhiteSpace(result.StandardOutput))
-                {
-                    OutputWindowHelper.WriteLine(result.StandardOutput.TrimEnd());
-                }
-
-                if (!string.IsNullOrWhiteSpace(result.StandardError))
-                {
-                    OutputWindowHelper.WriteLine(result.StandardError.TrimEnd());
-                }
+                    .WithStandardOutputPipe(PipeTarget.ToDelegate(line => OutputWindowHelper.WriteLine(line)))
+                    .WithStandardErrorPipe(PipeTarget.ToDelegate(line => OutputWindowHelper.WriteLine(line)))
+                    .ExecuteAsync();
 
                 if (result.ExitCode != 0)
                 {

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using VSLangProj;
@@ -16,6 +15,8 @@ namespace EfCoreUi
     public partial class Form1 : Form
     {
         public OprationModeEnum _oprationModeEnum { get; set; }
+        private bool _isInitializing;
+        private bool _migrationFromSolutionExplorer;
 
         public Form1()
         {
@@ -70,8 +71,10 @@ namespace EfCoreUi
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            _isInitializing = true;
             try
             {
+                var config = EfCoreUiConfigStore.Load();
                 SetMigrationProjects(MemoryParameter.Dte2);
                 await SetStartUpProject(MemoryParameter.Dte2);
                 SetBuildConfigurationComboBox();
@@ -79,7 +82,6 @@ namespace EfCoreUi
                 var creationMethodItems = new[] { MemoryParameter.CMStartupProject, MemoryParameter.CMDesignTimeFactory };
                 creation_method.Items.AddRange(creationMethodItems);
 
-                var config = EfCoreUiConfigStore.Load();
                 if (!string.IsNullOrWhiteSpace(config.CreationMethod))
                 {
                     MemoryParameter.CreationMethodSelectedItem = config.CreationMethod;
@@ -90,11 +92,17 @@ namespace EfCoreUi
                 }
 
                 creation_method.SelectedItem = MemoryParameter.CreationMethodSelectedItem;
+                ApplySavedConfig(config);
+                await LoadMigrationCombosAsync();
                 MemoryParameter.Form1LoadCount++;
             }
             catch (Exception ex)
             {
                 OutputWindowHelper.WriteError(ex.Message);
+            }
+            finally
+            {
+                _isInitializing = false;
             }
         }
 
@@ -111,8 +119,219 @@ namespace EfCoreUi
         private void SetMigrationProjects(DTE2 dTE2)
         {
             comboBoxMigrationProject.Items.AddRange(MemoryParameter.MigrationProjects.Select(s => s.Name).ToArray());
-            SetSelectedProjectFromSolutionExplorer(dTE2);
+            _migrationFromSolutionExplorer = TrySelectProjectFromSolutionExplorer(dTE2);
             comboBoxMigrationProject_Validating(comboBoxMigrationProject, new CancelEventArgs());
+        }
+
+        private void ApplySavedConfig(ConfigParameters config)
+        {
+            if (!_migrationFromSolutionExplorer && !string.IsNullOrWhiteSpace(config.MigrationProject))
+            {
+                if (MemoryParameter.MigrationProjects.Any(p => p.Name == config.MigrationProject))
+                {
+                    comboBoxMigrationProject.SelectedItem = config.MigrationProject;
+                    MemoryParameter.MigrationSelectedProject = MemoryParameter.MigrationProjects
+                        .First(p => p.Name == config.MigrationProject);
+                }
+            }
+            else if (MemoryParameter.MigrationSelectedProject == null && MemoryParameter.MigrationProjects.Any())
+            {
+                comboBoxMigrationProject.SelectedItem = MemoryParameter.MigrationProjects.First().Name;
+                MemoryParameter.MigrationSelectedProject = MemoryParameter.MigrationProjects.First();
+            }
+
+            RefreshMigrationProjectState(config.DbContext, config.MigrationFolder);
+        }
+
+        private bool TrySelectProjectFromSolutionExplorer(DTE2 dTE2)
+        {
+            var solutionExplorer = dTE2.ToolWindows.SolutionExplorer;
+            var items = solutionExplorer.SelectedItems as object[];
+
+            if (items == null || items.Length == 0)
+            {
+                return false;
+            }
+
+            foreach (object item in items)
+            {
+                if (item is UIHierarchyItem selectedItem && selectedItem.Object is Project project)
+                {
+                    if (MemoryParameter.MigrationProjects.Any(p => p.Name == project.Name))
+                    {
+                        comboBoxMigrationProject.SelectedItem = project.Name;
+                        MemoryParameter.MigrationSelectedProject = MemoryParameter.MigrationProjects
+                            .First(w => w.Name == project.Name);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private void RefreshMigrationProjectState(string preferredDbContext, string preferredMigrationFolder)
+        {
+            if (MemoryParameter.MigrationSelectedProject == null)
+            {
+                return;
+            }
+
+            if (_oprationModeEnum == OprationModeEnum.AddMigration)
+            {
+                PopulateMigrationFolderCombo(preferredMigrationFolder);
+            }
+
+            PopulateDbContextCombo(preferredDbContext);
+        }
+
+        private void PopulateMigrationFolderCombo(string preferredFolder)
+        {
+            MemoryParameter.MigrationRootPaths = GetProjectFolders(MemoryParameter.MigrationSelectedProject);
+            if (!MemoryParameter.MigrationRootPaths.Any(a => a.Key == "Migrations"))
+            {
+                MemoryParameter.MigrationRootPaths.Add("Migrations", "Migrations");
+            }
+
+            comboBoxMigrationFolder.Items.Clear();
+            comboBoxMigrationFolder.Items.AddRange(MemoryParameter.MigrationRootPaths.Select(s => s.Key).ToArray());
+
+            string selectedFolder = null;
+            if (!string.IsNullOrWhiteSpace(preferredFolder) && MemoryParameter.MigrationRootPaths.ContainsKey(preferredFolder))
+            {
+                selectedFolder = preferredFolder;
+            }
+            else if (MemoryParameter.MigrationRootPaths.ContainsKey("Migrations"))
+            {
+                selectedFolder = MemoryParameter.MigrationRootPaths.First(f => f.Key.Contains("Migrations")).Key;
+            }
+            else if (MemoryParameter.MigrationRootPaths.Any())
+            {
+                selectedFolder = MemoryParameter.MigrationRootPaths.First().Key;
+            }
+
+            if (selectedFolder != null)
+            {
+                comboBoxMigrationFolder.SelectedItem = selectedFolder;
+                MemoryParameter.MigrationSelectedRootPaths = MemoryParameter.MigrationRootPaths
+                    .First(w => w.Key == selectedFolder);
+            }
+
+            comboBoxMigrationFolder_Validating(comboBoxMigrationFolder, new CancelEventArgs());
+        }
+
+        private void PopulateDbContextCombo(string preferredDbContext)
+        {
+            comboBoxDbContextClass.Items.Clear();
+
+            if (MemoryParameter.DbContextClassLst == null || !MemoryParameter.DbContextClassLst.Any())
+            {
+                comboBoxDbContextClass_Validating(comboBoxDbContextClass, new CancelEventArgs());
+                return;
+            }
+
+            comboBoxDbContextClass.Items.AddRange(MemoryParameter.DbContextClassLst.Select(s => s.Key).ToArray());
+
+            string selectedDbContext = null;
+            if (!string.IsNullOrWhiteSpace(preferredDbContext) && MemoryParameter.DbContextClassLst.ContainsKey(preferredDbContext))
+            {
+                selectedDbContext = preferredDbContext;
+            }
+            else
+            {
+                var projectMatch = MemoryParameter.DbContextClassLst
+                    .FirstOrDefault(f => f.Value.Value == MemoryParameter.MigrationSelectedProject.Name);
+                if (!string.IsNullOrEmpty(projectMatch.Key))
+                {
+                    selectedDbContext = projectMatch.Key;
+                }
+            }
+
+            if (selectedDbContext != null)
+            {
+                comboBoxDbContextClass.SelectedItem = selectedDbContext;
+                ApplyDbContextSelection(selectedDbContext);
+            }
+
+            comboBoxDbContextClass_Validating(comboBoxDbContextClass, new CancelEventArgs());
+        }
+
+        private void ApplyDbContextSelection(string dbContextName)
+        {
+            if (string.IsNullOrWhiteSpace(dbContextName))
+            {
+                return;
+            }
+
+            MemoryParameter.DbContextSelectedClass = MemoryParameter.DbContextClassLst
+                .FirstOrDefault(w => w.Key == dbContextName);
+        }
+
+        private async Task LoadMigrationCombosAsync()
+        {
+            if (_oprationModeEnum != OprationModeEnum.GenerateSqlScript &&
+                _oprationModeEnum != OprationModeEnum.UpdateDatabase)
+            {
+                return;
+            }
+
+            if (MemoryParameter.MigrationSelectedProject == null || comboBoxDbContextClass.SelectedItem == null)
+            {
+                return;
+            }
+
+            var dbContextName = comboBoxDbContextClass.SelectedItem.ToString();
+            if (string.IsNullOrWhiteSpace(GetSelectedDbContextFullName()))
+            {
+                return;
+            }
+
+            comboBoxFromMigration.Items.Clear();
+            comboBoxToMigration.Items.Clear();
+
+            UseWaitCursor = true;
+            try
+            {
+                var migrations = await EfMigrationLister.ListMigrationsAsync(
+                    BuildCommandOptions(),
+                    MemoryParameter.MigrationSelectedProject,
+                    dbContextName);
+
+                if (migrations.Count == 0)
+                {
+                    return;
+                }
+
+                if (_oprationModeEnum == OprationModeEnum.GenerateSqlScript)
+                {
+                    var toMigrations = migrations.OrderByDescending(m => m).ToArray();
+                    comboBoxToMigration.Items.AddRange(toMigrations);
+                    comboBoxToMigration.SelectedItem = toMigrations.First();
+
+                    var fromMigrations = migrations.OrderBy(m => m).ToList();
+                    fromMigrations.Add("0");
+                    comboBoxFromMigration.Items.AddRange(fromMigrations.ToArray());
+                    comboBoxFromMigration.SelectedItem = fromMigrations.First();
+                }
+                else if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
+                {
+                    var targetMigrations = migrations.OrderByDescending(m => m).ToList();
+                    targetMigrations.Add("0");
+                    comboBoxToMigration.Items.AddRange(targetMigrations.ToArray());
+                    comboBoxToMigration.SelectedItem = targetMigrations.First();
+                }
+            }
+            finally
+            {
+                UseWaitCursor = false;
+            }
+        }
+
+        private void UpdateConfigField(Action<ConfigParameters> update)
+        {
+            var config = EfCoreUiConfigStore.Load();
+            update(config);
+            EfCoreUiConfigStore.Save(config);
         }
 
         private async Task SetSelectedStartUpProject(List<Project> runnableProjects)
@@ -146,26 +365,6 @@ namespace EfCoreUi
             }
         }
 
-        private void SetSelectedProjectFromSolutionExplorer(DTE2 dTE2)
-        {
-            var solutionExplorer = dTE2.ToolWindows.SolutionExplorer;
-            var items = solutionExplorer.SelectedItems as object[];
-
-            if (items == null || items.Length == 0)
-            {
-                return;
-            }
-
-            foreach (object item in items)
-            {
-                if (item is UIHierarchyItem selectedItem && selectedItem.Object is Project project)
-                {
-                    comboBoxMigrationProject.SelectedItem = project.Name;
-                    MemoryParameter.MigrationSelectedProject = MemoryParameter.MigrationProjects.FirstOrDefault(w => w.Name == project.Name);
-                }
-            }
-        }
-
         private void SetBuildConfigurationComboBox()
         {
             var config = EfCoreUiConfigStore.Load();
@@ -175,108 +374,22 @@ namespace EfCoreUi
             MemoryParameter.BuildConfigSelectedItem = buildConfig;
         }
 
-        private void comboBoxMigrationProject_SelectedIndexChanged(object sender, EventArgs e)
+        private async void comboBoxMigrationProject_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                if (comboBoxMigrationProject.SelectedItem == null)
+                if (_isInitializing || comboBoxMigrationProject.SelectedItem == null)
                 {
                     return;
                 }
 
-                MemoryParameter.MigrationSelectedProject = MemoryParameter.MigrationProjects.FirstOrDefault(w => w.Name == comboBoxMigrationProject.SelectedItem.ToString());
+                var projectName = comboBoxMigrationProject.SelectedItem.ToString();
+                MemoryParameter.MigrationSelectedProject = MemoryParameter.MigrationProjects
+                    .FirstOrDefault(w => w.Name == projectName);
 
-                if (_oprationModeEnum == OprationModeEnum.AddMigration)
-                {
-                    MemoryParameter.MigrationRootPaths = GetProjectFolders(MemoryParameter.MigrationSelectedProject);
-                    if (!MemoryParameter.MigrationRootPaths.Any(a => a.Key == "Migrations"))
-                    {
-                        //var x = MemoryParameter.MigrationSelectedProject.FullName.Replace(MemoryParameter.MigrationSelectedProject.Name + ".csproj", "Migrations");
-
-                        MemoryParameter.MigrationRootPaths.Add("Migrations", "Migrations");
-                    }
-
-                    comboBoxMigrationFolder.Items.Clear();
-                    comboBoxMigrationFolder.Items.AddRange(MemoryParameter.MigrationRootPaths.Select(s => s.Key).ToArray());
-                    if (MemoryParameter.MigrationRootPaths.ContainsKey("Migrations"))
-                    {
-                        comboBoxMigrationFolder.SelectedItem = MemoryParameter.MigrationRootPaths.FirstOrDefault(f => f.Key.Contains("Migrations")).Key;
-                    }
-                    else
-                    {
-                        comboBoxMigrationFolder.SelectedItem = MemoryParameter.MigrationRootPaths.FirstOrDefault().Key;
-                    }
-
-                    comboBoxMigrationFolder_Validating(comboBoxMigrationFolder, new CancelEventArgs());
-                }
-
-                // if (MemoryParameter.DbContextClassLst != null && MemoryParameter.DbContextClassLst.Any())
-                // {
-                //     MemoryParameter.DbContextClassLst.Clear();
-                // }
-                //
-                // MemoryParameter.DbContextClassLst = GetDbContextClassNames(MemoryParameter.MigrationSelectedProject);
-                //
-                //
-
-                if (MemoryParameter.DbContextClassLst != null && MemoryParameter.DbContextClassLst.Any())
-                {
-                    comboBoxDbContextClass.Items.Clear();
-                    comboBoxDbContextClass.Items.AddRange(MemoryParameter.DbContextClassLst.Select(s => s.Key).ToArray());
-                    comboBoxDbContextClass.SelectedItem = MemoryParameter.DbContextClassLst.FirstOrDefault(f => f.Value.Value == MemoryParameter.MigrationSelectedProject.Name).Key;
-                    comboBoxDbContextClass_Validating(comboBoxDbContextClass, new CancelEventArgs());
-                }
-                else
-                {
-                    comboBoxDbContextClass.Items.Clear();
-
-                    comboBoxDbContextClass_Validating(comboBoxDbContextClass, new CancelEventArgs());
-                }
-
-
-                if (_oprationModeEnum == OprationModeEnum.GenerateSqlScript)
-                {
-                    if (comboBoxDbContextClass.SelectedItem != null)
-                    {
-                        var migrationLst = GetMigrationFileByDbContextName(MemoryParameter.MigrationSelectedProject, comboBoxDbContextClass.SelectedItem.ToString());
-                        if (migrationLst.Count >= 1)
-                        {
-                            comboBoxToMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
-                            comboBoxToMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
-                        }
-
-                        if (migrationLst.Count >= 1)
-                        {
-                            migrationLst.Add("0");
-
-                            comboBoxFromMigration.Items.AddRange(migrationLst.OrderBy(o => o).ToArray());
-                            comboBoxFromMigration.SelectedItem = migrationLst.OrderBy(o => o).ToArray().FirstOrDefault();
-                        }
-                    }
-                    else
-                    {
-                        comboBoxFromMigration.Items.Clear();
-                        comboBoxToMigration.Items.Clear();
-                    }
-                }
-
-                if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
-                {
-                    if (comboBoxDbContextClass.SelectedItem != null)
-                    {
-                        var migrationLst = GetMigrationFileByDbContextName(MemoryParameter.MigrationSelectedProject, comboBoxDbContextClass.SelectedItem.ToString());
-                        if (migrationLst.Count >= 1)
-                        {
-                            migrationLst.Add("0");
-                            comboBoxToMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
-                            comboBoxToMigration.SelectedItem = migrationLst.OrderByDescending(o => o).ToArray().FirstOrDefault();
-                        }
-                    }
-                    else
-                    {
-                        comboBoxToMigration.Items.Clear();
-                    }
-                }
+                UpdateConfigField(c => c.MigrationProject = projectName);
+                RefreshMigrationProjectState(null, null);
+                await LoadMigrationCombosAsync();
             }
             catch (Exception ex)
             {
@@ -286,41 +399,29 @@ namespace EfCoreUi
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxStartupProject.SelectedItem == null)
+            if (comboBoxStartupProject.SelectedItem == null || _isInitializing)
             {
                 return;
             }
 
-            var config = EfCoreUiConfigStore.Load();
-            config.StartUpProject = comboBoxStartupProject.SelectedItem.ToString();
-            EfCoreUiConfigStore.Save(config);
-
-            MemoryParameter.StartUpSelectedProject = MemoryParameter.StartUpProjects.FirstOrDefault(w => w.Name == comboBoxStartupProject.SelectedItem.ToString());
+            UpdateConfigField(c => c.StartUpProject = comboBoxStartupProject.SelectedItem.ToString());
+            MemoryParameter.StartUpSelectedProject = MemoryParameter.StartUpProjects
+                .FirstOrDefault(w => w.Name == comboBoxStartupProject.SelectedItem.ToString());
         }
 
-        private void comboBoxDbContextClass_SelectedIndexChanged(object sender, EventArgs e)
+        private async void comboBoxDbContextClass_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                if (comboBoxDbContextClass.SelectedItem != null)
+                if (_isInitializing || comboBoxDbContextClass.SelectedItem == null)
                 {
-                    MemoryParameter.DbContextSelectedClass = MemoryParameter.DbContextClassLst.FirstOrDefault(w => w.Key == comboBoxDbContextClass.SelectedItem.ToString());
+                    return;
                 }
 
-                if (_oprationModeEnum == OprationModeEnum.UpdateDatabase)
-                {
-                    comboBoxToMigration.Items.Clear();
-                    if (comboBoxDbContextClass.SelectedItem != null)
-                    {
-                        var migrationLst = GetMigrationFileByDbContextName(MemoryParameter.MigrationSelectedProject, comboBoxDbContextClass.SelectedItem.ToString());
-                        if (migrationLst.Count >= 1)
-                        {
-                            migrationLst.Add("0");
-                            comboBoxToMigration.Items.AddRange(migrationLst.OrderByDescending(o => o).ToArray());
-                            comboBoxToMigration.SelectedItem = migrationLst.OrderByDescending(o => o).FirstOrDefault();
-                        }
-                    }
-                }
+                var dbContextName = comboBoxDbContextClass.SelectedItem.ToString();
+                ApplyDbContextSelection(dbContextName);
+                UpdateConfigField(c => c.DbContext = dbContextName);
+                await LoadMigrationCombosAsync();
             }
             catch (Exception ex)
             {
@@ -330,15 +431,26 @@ namespace EfCoreUi
 
         private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(comboBoxMigrationFolder.SelectedItem.ToString()))
+            if (_isInitializing || comboBoxMigrationFolder.SelectedItem == null)
             {
-                MemoryParameter.MigrationSelectedRootPaths = MemoryParameter.MigrationRootPaths.FirstOrDefault(w => w.Key == comboBoxMigrationFolder.SelectedItem.ToString());
+                return;
             }
+
+            var folderName = comboBoxMigrationFolder.SelectedItem.ToString();
+            MemoryParameter.MigrationSelectedRootPaths = MemoryParameter.MigrationRootPaths
+                .FirstOrDefault(w => w.Key == folderName);
+            UpdateConfigField(c => c.MigrationFolder = folderName);
         }
 
         private void comboBox5_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_isInitializing || comboBoxBuildConfig.SelectedItem == null)
+            {
+                return;
+            }
+
             MemoryParameter.BuildConfigSelectedItem = comboBoxBuildConfig.SelectedItem.ToString();
+            UpdateConfigField(c => c.BuildConfig = comboBoxBuildConfig.SelectedItem.ToString());
         }
 
 
@@ -424,6 +536,16 @@ namespace EfCoreUi
                     return;
                 }
 
+                if (!await DotNetEfToolChecker.IsInstalledAsync())
+                {
+                    MessageBox.Show(
+                        DotNetEfToolChecker.GetInstallMessage(),
+                        "dotnet-ef not installed",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
                 SaveCurrentConfig();
                 button1.Enabled = false;
 
@@ -481,7 +603,7 @@ namespace EfCoreUi
                 Operation = _oprationModeEnum,
                 MigrationProjectPath = MemoryParameter.MigrationSelectedProject.FullName,
                 StartupProjectPath = MemoryParameter.StartUpSelectedProject?.FullName,
-                DbContextFullName = MemoryParameter.DbContextSelectedClass.Value.Key,
+                DbContextFullName = GetSelectedDbContextFullName(),
                 BuildConfiguration = MemoryParameter.BuildConfigSelectedItem,
                 OutputDirectory = MemoryParameter.MigrationSelectedRootPaths.Value,
                 NoBuild = checkBox1.Checked,
@@ -496,6 +618,16 @@ namespace EfCoreUi
                 NoTransactions = checkBoxTransactions.Checked,
                 ConnectionString = connectionString
             };
+        }
+
+        private string GetSelectedDbContextFullName()
+        {
+            if (!string.IsNullOrEmpty(MemoryParameter.DbContextSelectedClass.Key))
+            {
+                return MemoryParameter.DbContextSelectedClass.Value.Key;
+            }
+
+            return null;
         }
 
         private void SaveCurrentConfig()
@@ -778,80 +910,6 @@ namespace EfCoreUi
 
 
 
-        #region generate Sql Script
-
-        static List<string> GetMigrationFileByDbContextName(Project project, string dbContextName)
-        {
-            // خواندن تمام فایل‌ها و نمایش محتوای آنها
-            Dictionary<string, string> filesContent = ReadAllFilesInProject(project);
-
-            // جستجوی الگو و نمایش فایل‌های مطابق
-            Dictionary<string, string> matchingFiles = SearchPatternInFiles(filesContent, $@"\[DbContext\(typeof\({dbContextName}\)\)\]", @"\[Migration\(.*\)\]");
-            return matchingFiles.Keys.ToList();
-        }
-
-
-        static Dictionary<string, string> SearchPatternInFiles(Dictionary<string, string> filesContent, string pattern, string pattern2)
-        {
-            Dictionary<string, string> matchingFiles = new Dictionary<string, string>();
-
-            foreach (var fileContent in filesContent)
-            {
-                // جستجوی الگو در محتوای فایل
-                if (Regex.IsMatch(fileContent.Value, pattern) && Regex.IsMatch(fileContent.Value, pattern2))
-                {
-                    matchingFiles.Add(fileContent.Key.Replace(".Designer.cs", ""), fileContent.Value);
-                }
-            }
-
-            return matchingFiles;
-        }
-
-        static Dictionary<string, string> ReadAllFilesInProject(Project project)
-        {
-            Dictionary<string, string> filesContent = new Dictionary<string, string>();
-
-            // دریافت پروژه به عنوان پوشه پروژه
-            foreach (ProjectItem item in project.ProjectItems)
-            {
-                // خواندن محتوای تمام فایل‌ها
-                ReadFilesContent(item, filesContent);
-            }
-
-
-            return filesContent;
-        }
-
-        static void ReadFilesContent(ProjectItem projectItem, Dictionary<string, string> filesContent)
-        {
-            foreach (ProjectItem item in projectItem.ProjectItems)
-            {
-                // بررسی آیا این یک فایل است
-                if (item.FileCount > 0)
-                {
-                    // خواندن محتوای فایل
-                    string fileName = item.Name;
-                    string filePath = item.FileNames[1]; // شماره 1 به معنای مسیر فایل است
-                    var fileExtention = System.IO.Path.GetExtension(filePath);
-                    if (fileExtention.Contains(".cs"))
-                    {
-                        string fileContent = File.ReadAllText(filePath);
-
-                        // افزودن به دیکشنری
-                        filesContent.Add(fileName, fileContent);
-                    }
-                }
-
-                // اگر یک پوشه باشد، فراخوانی بازگشتی بر روی آن انجام می‌شود
-                if (item.ProjectItems != null && item.ProjectItems.Count > 0)
-                {
-                    ReadFilesContent(item, filesContent);
-                }
-            }
-        }
-
-        #endregion
-
         private void checkBoxUseDefaultConnection_CheckedChanged(object sender, EventArgs e)
         {
             if (checkBoxUseDefaultConnection.Checked)
@@ -872,6 +930,11 @@ namespace EfCoreUi
                 this.comboBoxStartupProject.Enabled = false;
 
             MemoryParameter.CreationMethodSelectedItem = creation_method.SelectedItem.ToString();
+
+            if (!_isInitializing)
+            {
+                UpdateConfigField(c => c.CreationMethod = creation_method.SelectedItem.ToString());
+            }
         }
 
         private void button4_Click(object sender, EventArgs e)

@@ -1,5 +1,7 @@
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using System;
 
 namespace EfCoreUi.Services
@@ -13,26 +15,40 @@ namespace EfCoreUi.Services
                 return null;
             }
 
-            var window = MemoryParameter.Dte2?.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
-            window?.Activate();
-            window?.SetFocus();
+            return ThreadHelper.JoinableTaskFactory.Run(() =>
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
 
-            var paneGuid = Guid.NewGuid();
-            MemoryParameter.OutputWindow.CreatePane(
-                ref paneGuid,
-                title,
-                Convert.ToInt32(true),
-                Convert.ToInt32(true));
+                var window = MemoryParameter.Dte2?.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
+                window?.Activate();
+                window?.SetFocus();
 
-            MemoryParameter.OutputWindow.GetPane(ref paneGuid, out var outputPane);
-            MemoryParameter.OutputPane = outputPane;
-            outputPane?.Activate();
-            return outputPane;
+                var paneGuid = Guid.NewGuid();
+                MemoryParameter.OutputWindow.CreatePane(
+                    ref paneGuid,
+                    title,
+                    Convert.ToInt32(true),
+                    Convert.ToInt32(true));
+
+                MemoryParameter.OutputWindow.GetPane(ref paneGuid, out var outputPane);
+                MemoryParameter.OutputPane = outputPane;
+                outputPane?.Activate();
+                return outputPane;
+            });
         }
 
         public static void WriteLine(string message)
         {
-            MemoryParameter.OutputPane?.OutputString(message + Environment.NewLine);
+            if (MemoryParameter.OutputPane == null || string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+
+            ThreadHelper.JoinableTaskFactory.Run(() =>
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                MemoryParameter.OutputPane.OutputString(message + Environment.NewLine);
+            });
         }
 
         public static void WriteError(string message)
