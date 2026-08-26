@@ -1,14 +1,14 @@
-﻿using System;
+﻿using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using EfCoreUi.Services;
+using Task = System.Threading.Tasks.Task;
 
 namespace EfCoreUi
 {
@@ -16,7 +16,7 @@ namespace EfCoreUi
     {
         public static async Task<List<Project>> GetProjects(DTE2 dte)
         {
-            List<Project> projects = new List<Project>();
+            var projects = new List<Project>();
 
             foreach (Project project in dte.Solution.Projects)
             {
@@ -26,7 +26,7 @@ namespace EfCoreUi
             return projects;
         }
 
-        private static async Task GetProjectsRecursive(Project project, List<Project> projects)
+        private static Task GetProjectsRecursive(Project project, List<Project> projects)
         {
             if (project.Kind != ProjectKinds.vsProjectKindSolutionFolder)
             {
@@ -34,7 +34,6 @@ namespace EfCoreUi
             }
             else
             {
-                // اگر پوشه‌ای از نوع Solution Folder باشد، به صورت بازگشتی پروژه‌های داخلی آن را بگیرید
                 foreach (ProjectItem item in project.ProjectItems)
                 {
                     if (item.SubProject != null)
@@ -43,11 +42,13 @@ namespace EfCoreUi
                     }
                 }
             }
+
+            return Task.CompletedTask;
         }
 
         public static Dictionary<string, KeyValuePair<string, string>> GetDbContextClassNames(Project project)
         {
-            Dictionary<string, KeyValuePair<string, string>> dbContextClassNames = new Dictionary<string, KeyValuePair<string, string>>();
+            var dbContextClassNames = new Dictionary<string, KeyValuePair<string, string>>();
 
             foreach (CodeClass codeClass in GetClassesInProject(project))
             {
@@ -62,7 +63,7 @@ namespace EfCoreUi
 
         private static IEnumerable<CodeClass> GetClassesInProject(Project project)
         {
-            List<CodeClass> classes = new List<CodeClass>();
+            var classes = new List<CodeClass>();
             foreach (ProjectItem projectItem in project.ProjectItems)
             {
                 GetClassesInProjectItem(projectItem, classes);
@@ -74,42 +75,73 @@ namespace EfCoreUi
         public static void DetectPreserveRequired()
         {
             MemoryParameter.MigrationProjects.Clear();
+
             foreach (Project projectItem in MemoryParameter.Projects)
             {
-                MemoryParameter.MigrationProjects.Add(projectItem);
+                if (projectItem.Kind == EnvDTE.Constants.vsProjectKindMisc)
+                {
+                    continue;
+                }
+
+                if (HasEntityFrameworkReference(projectItem) || GetDbContextClassNames(projectItem).Any())
+                {
+                    MemoryParameter.MigrationProjects.Add(projectItem);
+                }
             }
 
-            if (MemoryParameter.Projects.Any())
+            if (!MemoryParameter.Projects.Any())
             {
-                MemoryParameter.DbContextClassLst.Clear();
+                return;
+            }
 
-                foreach (var item in MemoryParameter.Projects)
+            MemoryParameter.DbContextClassLst.Clear();
+
+            foreach (var item in MemoryParameter.Projects)
+            {
+                if (item.Kind == EnvDTE.Constants.vsProjectKindMisc)
                 {
-                    if (item.Kind != EnvDTE.Constants.vsProjectKindMisc)
+                    continue;
+                }
+
+                foreach (var dic in GetDbContextClassNames(item))
+                {
+                    MemoryParameter.DbContextClassLst[dic.Key] = dic.Value;
+                }
+            }
+        }
+
+        private static bool HasEntityFrameworkReference(Project project)
+        {
+            try
+            {
+                if (!(project.Object is VSLangProj.VSProject vsProject))
+                {
+                    return false;
+                }
+
+                foreach (VSLangProj.Reference reference in vsProject.References)
+                {
+                    if (reference.Name.IndexOf("EntityFrameworkCore", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        reference.Name.IndexOf("EntityFramework", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        var dicToAdd = GetDbContextClassNames(item);
-                        foreach (var dic in dicToAdd)
-                        {
-                            MemoryParameter.DbContextClassLst.Add(dic.Key, dic.Value);
-                        }
+                        return true;
                     }
                 }
             }
+            catch
+            {
+                return false;
+            }
+
+            return false;
         }
 
         private static bool IsDbContextSubclass(CodeClass codeClass)
         {
             foreach (CodeElement baseClass in codeClass.Bases)
             {
-                if (baseClass.FullName == "System.Data.Entity.DbContext")
-                {
-                    return true;
-                }
-                else if (baseClass.FullName == "Microsoft.EntityFrameworkCore.DbContext")
-                {
-                    return true;
-                }
-                else if (baseClass.FullName.ToLower().Trim().Contains("dbcontext"))
+                if (baseClass.FullName == "System.Data.Entity.DbContext" ||
+                    baseClass.FullName == "Microsoft.EntityFrameworkCore.DbContext")
                 {
                     return true;
                 }

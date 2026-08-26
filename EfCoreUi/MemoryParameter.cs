@@ -62,5 +62,10 @@ namespace EfCoreUi
     public class ConfigParameters
     {
         public string StartUpProject { get; set; }
+        public string MigrationProject { get; set; }
+        public string DbContext { get; set; }
+        public string MigrationFolder { get; set; }
+        public string BuildConfig { get; set; }
+        public string CreationMethod { get; set; }
     }
 }

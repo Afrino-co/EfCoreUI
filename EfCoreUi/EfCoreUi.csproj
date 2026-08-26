@@ -70,6 +70,13 @@
     <Compile Include="PreServeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EfCoreUiPackage.cs" />
+    <Compile Include="Services\ConnectionStringExtractor.cs" />
+    <Compile Include="Services\DotNetPathResolver.cs" />
+    <Compile Include="Services\EfCommandBuilder.cs" />
+    <Compile Include="Services\EfCommandOptions.cs" />
+    <Compile Include="Services\EfCommandRunner.cs" />
+    <Compile Include="Services\EfCoreUiConfigStore.cs" />
+    <Compile Include="Services\OutputWindowHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source.extension.vsixmanifest">
@@ -78,9 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-      <HintPath>..\..\..\..\..\..\program files\microsoft visual studio\2022\enterprise\common7\ide\extensions\microsoft\templateengine\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -99,7 +103,7 @@
     <PackageReference Include="CliWrap">
       <Version>3.6.4</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.32112.339" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
   </ItemGroup>
