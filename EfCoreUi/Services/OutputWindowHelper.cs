@@ -1,7 +1,5 @@
-using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Threading;
 using System;
 
 namespace EfCoreUi.Services
@@ -15,9 +13,9 @@ namespace EfCoreUi.Services
                 return null;
             }
 
-            return ThreadHelper.JoinableTaskFactory.Run(() =>
+            return ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
                 var window = MemoryParameter.Dte2?.Windows.Item(EnvDTE.Constants.vsWindowKindOutput);
                 window?.Activate();
@@ -44,10 +42,10 @@ namespace EfCoreUi.Services
                 return;
             }
 
-            ThreadHelper.JoinableTaskFactory.Run(() =>
+            ThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                MemoryParameter.OutputPane.OutputString(message + Environment.NewLine);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                MemoryParameter.OutputPane.OutputStringThreadSafe(message + Environment.NewLine);
             });
         }
 
