@@ -1,0 +1,56 @@
+name: Build VSIX
+
+on:
+  push:
+    branches: [main, 'feature/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v2
+
+      - name: Restore NuGet packages
+        run: nuget restore EfCoreUi.sln
+
+      - name: Build Release
+        run: >
+          msbuild EfCoreUi.sln
+          /p:Configuration=Release
+          /p:Platform="Any CPU"
+          /p:DeployExtension=false
+          /p:CreateVsixContainer=true
+          /v:m
+
+      - name: Find VSIX output
+        id: find_vsix
+        shell: pwsh
+        run: |
+          $vsix = Get-ChildItem -Path . -Recurse -Filter *.vsix |
+            Where-Object { $_.FullName -match '\\bin\\Release\\' } |
+            Select-Object -First 1
+          if (-not $vsix) {
+            Write-Error "No .vsix found under bin\Release"
+            exit 1
+          }
+          Write-Host "Found: $($vsix.FullName)"
+          "path=$($vsix.FullName)" >> $env:GITHUB_OUTPUT
+          "name=$($vsix.Name)" >> $env:GITHUB_OUTPUT
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: EfCoreUI-vsix
+          path: ${{ steps.find_vsix.outputs.path }}
+          if-no-files-found: error
